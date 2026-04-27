@@ -1,15 +1,18 @@
 package com.busbooking.entity;
 import jakarta.persistence.*;
-import lombok.*;
 
 @Entity
 @Table(name = "buses")
 public class Bus {
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long busId;
     private String registrationNumber;
     private String type;
     private Integer capacity;
+    @ManyToOne @JoinColumn(name = "office_id")
+    private AgencyOffice office;
+    
 	public Long getBusId() {
 		return busId;
 	}
@@ -34,12 +37,19 @@ public class Bus {
 	public void setCapacity(Integer capacity) {
 		this.capacity = capacity;
 	}
-	public Bus(Long busId, String registrationNumber, String type, Integer capacity) {
+	public AgencyOffice getOffice() {
+		return office;
+	}
+	public void setOffice(AgencyOffice office) {
+		this.office = office;
+	}
+	public Bus(Long busId, String registrationNumber, String type, Integer capacity, AgencyOffice office) {
 		super();
 		this.busId = busId;
 		this.registrationNumber = registrationNumber;
 		this.type = type;
 		this.capacity = capacity;
+		this.office = office;
 	}
     public Bus() {}
 }
