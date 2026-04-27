@@ -13,9 +13,7 @@ import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name="agency_offices")
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
+
 public class AgencyOffice {
 	
 @Id
@@ -31,5 +29,82 @@ private String officeMail;
 private String officeContactPersonName;
 
 private String officeContactNumber;
+
+@ManyToOne()
+@JoinColumn(name="agencyId")
+private Agency agency;
+
+
+public AgencyOffice() {
+	super();
+}
+
+
+
+public AgencyOffice(Integer officeId, Agency agencyId, String officeMail, String officeContactPersonName,
+		String officeContactNumber, Agency agency) {
+	super();
+	this.officeId = officeId;
+	this.agencyId = agencyId;
+	this.officeMail = officeMail;
+	this.officeContactPersonName = officeContactPersonName;
+	this.officeContactNumber = officeContactNumber;
+	this.agency = agency;
+}
+
+
+
+public Agency getAgency() {
+	return agency;
+}
+
+
+
+public void setAgency(Agency agency) {
+	this.agency = agency;
+}
+
+
+
+public Integer getOfficeId() {
+	return officeId;
+}
+
+public void setOfficeId(Integer officeId) {
+	this.officeId = officeId;
+}
+
+public Agency getAgencyId() {
+	return agencyId;
+}
+
+public void setAgencyId(Agency agencyId) {
+	this.agencyId = agencyId;
+}
+
+public String getOfficeMail() {
+	return officeMail;
+}
+
+public void setOfficeMail(String officeMail) {
+	this.officeMail = officeMail;
+}
+
+public String getOfficeContactPersonName() {
+	return officeContactPersonName;
+}
+
+public void setOfficeContactPersonName(String officeContactPersonName) {
+	this.officeContactPersonName = officeContactPersonName;
+}
+
+public String getOfficeContactNumber() {
+	return officeContactNumber;
+}
+
+public void setOfficeContactNumber(String officeContactNumber) {
+	this.officeContactNumber = officeContactNumber;
+}
 	
+
 }
