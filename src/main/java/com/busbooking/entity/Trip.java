@@ -133,22 +133,6 @@ public class Trip {
 			this.fare = fare;
 		}
 
-		public Trip(Long tripId, Route route, Bus bus, Address boardingAddress, Address droppingAddress, Driver driver1,
-				Driver driver2, LocalDateTime departureTime, LocalDateTime arrivalTime, LocalDateTime tripDate,
-				Integer availableSeats, BigDecimal fare) {
-			super();
-			this.tripId = tripId;
-			this.route = route;
-			this.bus = bus;
-			this.boardingAddress = boardingAddress;
-			this.droppingAddress = droppingAddress;
-			this.driver1 = driver1;
-			this.driver2 = driver2;
-			this.departureTime = departureTime;
-			this.arrivalTime = arrivalTime;
-			this.tripDate = tripDate;
-			this.availableSeats = availableSeats;
-			this.fare = fare;
-		}
+		
 	
 }
