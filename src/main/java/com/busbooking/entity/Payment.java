@@ -12,6 +12,10 @@ public class Payment {
     private Long paymentId;
     private BigDecimal amount;
 
+    public Payment(){
+
+    }
+
     public Long getPaymentId() {
         return paymentId;
     }

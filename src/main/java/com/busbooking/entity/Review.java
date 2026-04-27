@@ -15,6 +15,10 @@ public class Review {
     private String comment;
     private LocalDateTime reviewDate;
 
+    public Review(){
+
+    }
+
     public Long getReviewId() {
         return reviewId;
     }
