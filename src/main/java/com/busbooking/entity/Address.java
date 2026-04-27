@@ -12,6 +12,19 @@ import jakarta.persistence.Table;
 @Table(name="addresses")
 public class Address {
 	
+	public Address() {
+		
+	}
+	
+	public Address(Long addressId, String address, String city, String state, String zipCode) {
+		
+		this.addressId = addressId;
+		this.address = address;
+		this.city = city;
+		this.state = state;
+		this.zipCode = zipCode;
+	}
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long addressId;
