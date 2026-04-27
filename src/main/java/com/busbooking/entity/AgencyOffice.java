@@ -7,9 +7,6 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name="agency_offices")
@@ -20,9 +17,7 @@ public class AgencyOffice {
 @GeneratedValue(strategy = GenerationType.IDENTITY)
 private Integer officeId;
 
-@ManyToOne()
-@JoinColumn(name="agencyId")
-private Agency agencyId;
+
 
 private String officeMail;
 
@@ -45,7 +40,7 @@ public AgencyOffice(Integer officeId, Agency agencyId, String officeMail, String
 		String officeContactNumber, Agency agency) {
 	super();
 	this.officeId = officeId;
-	this.agencyId = agencyId;
+
 	this.officeMail = officeMail;
 	this.officeContactPersonName = officeContactPersonName;
 	this.officeContactNumber = officeContactNumber;
@@ -74,13 +69,6 @@ public void setOfficeId(Integer officeId) {
 	this.officeId = officeId;
 }
 
-public Agency getAgencyId() {
-	return agencyId;
-}
-
-public void setAgencyId(Agency agencyId) {
-	this.agencyId = agencyId;
-}
 
 public String getOfficeMail() {
 	return officeMail;

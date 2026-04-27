@@ -25,27 +25,33 @@ public class Passenger {
 
 	@ManyToOne()
 	@JoinColumn(name = "bookingId")
-	private Booking trip;
+	private Booking booking;
 
 	public Passenger() {
 
 	}
 
-	public Booking getTrip() {
-		return trip;
+	
+
+	public Booking getBooking() {
+		return booking;
 	}
 
-	public void setTrip(Booking trip) {
-		this.trip = trip;
+
+
+	public void setBooking(Booking booking) {
+		this.booking = booking;
 	}
 
-	public Passenger(Integer pId, String pName, Integer pAge, String seatNo, Booking trip) {
+
+
+	public Passenger(Integer pId, String pName, Integer pAge, String seatNo, Booking booking) {
 		super();
 		this.pId = pId;
 		this.pName = pName;
 		this.pAge = pAge;
 		this.seatNo = seatNo;
-		this.trip = trip;
+		this.booking = booking;
 	}
 
 	public Integer getpId() {

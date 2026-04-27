@@ -1,5 +1,5 @@
 package com.busbooking.exception;
 
-public class NotAvailableException {
+public class NotAvailableException extends RuntimeException {
 
 }

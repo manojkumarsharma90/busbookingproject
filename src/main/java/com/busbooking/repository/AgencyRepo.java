@@ -1,5 +1,11 @@
 package com.busbooking.repository;
 
-public interface AgencyRepo {
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
+
+import com.busbooking.entity.Agency;
+
+@Repository
+public interface AgencyRepo extends JpaRepository<Agency, Long> {
 
 }
