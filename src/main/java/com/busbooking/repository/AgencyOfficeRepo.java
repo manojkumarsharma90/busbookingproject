@@ -9,6 +9,7 @@ import com.busbooking.entity.AgencyOffice;
 
 public interface AgencyOfficeRepo extends JpaRepository<AgencyOffice, Integer> {
 	
+	List<AgencyOffice> findByAgency_AgencyId(Long agencyId);
 	
 
 }
