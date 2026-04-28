@@ -1,8 +1,7 @@
 package com.busbooking.entity;
 import jakarta.persistence.*;
-import lombok.*;
 
-@Entit
+@Entity
 @Table(name = "buses")
 public class Bus {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
