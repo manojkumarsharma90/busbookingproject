@@ -1,107 +1,118 @@
 package com.busbooking.entity;
 
-import java.util.Set;
-
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
-@Table(name="bookings")
+@Table(name = "bookings")
 public class Booking {
 	
-	public Booking() {
-		
-	}	
 	
-	public Booking(Long bookingId, Integer seatNumber, Trip trip, boolean deleted) {
-		
-		this.bookingId = bookingId;
-		this.seatNumber = seatNumber;
-		this.trip = trip;
-		this.deleted = deleted;
+	public Booking() {
 	}
 
-
+	public Booking(Long bookingId, Trip trip, Customer customer, Integer seatNumber, BookingStatus status,
+			boolean deleted, LocalDateTime bookingDate) {
+		this.bookingId = bookingId;
+		this.trip = trip;
+		this.customer = customer;
+		this.seatNumber = seatNumber;
+		this.status = status;
+		this.deleted = deleted;
+		this.bookingDate = bookingDate;
+	}
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	 private Long bookingId;
-	
-	@Column(nullable=false)
-	 private Integer seatNumber;
-	
-	@ManyToOne()
-	@JoinColumn(name="trip_id")
+	private Long bookingId;
+
+	@ManyToOne
+	@JoinColumn(name = "trip_id")
 	private Trip trip;
-	 
-	 private boolean deleted = false;
-	 
-	 @OneToMany(mappedBy = "trip")
-	 private Set<Passenger> pSet;
 
-	 public Long getBookingId() {
-		 return bookingId;
-	 }
+	@ManyToOne
+	@JoinColumn(name = "customer_id")
+	private Customer customer;
 
-	 public void setBookingId(Long bookingId) {
-		 this.bookingId = bookingId;
-	 }
+	@Column(nullable = false)
+	private Integer seatNumber;
 
-	 public Integer getSeatNumber() {
-		 return seatNumber;
-	 }
+	@Enumerated(EnumType.STRING)
+	@Column(length=20)
+	private BookingStatus status = BookingStatus.Available;
 
-	 public void setSeatNumber(Integer seatNumber) {
-		 this.seatNumber = seatNumber;
-	 }
+	private boolean deleted = false;
 
-	 public boolean isDeleted() {
-		 return deleted;
-	 }
+	private LocalDateTime bookingDate;
 
-	 public void setDeleted(boolean deleted) {
-		 this.deleted = deleted;
-	 }
-	 
+	@OneToMany(mappedBy = "booking", cascade = CascadeType.ALL, orphanRemoval = true)
+	private List<Passenger> passengers = new ArrayList<>();
 
-	 public Trip getTrip() {
+	
+
+	public Long getBookingId() {
+		return bookingId;
+	}
+
+	public void setBookingId(Long bookingId) {
+		this.bookingId = bookingId;
+	}
+
+	public Trip getTrip() {
 		return trip;
 	}
 
-	 public void setTrip(Trip trip) {
-		 this.trip = trip;
-	 }
-
-	 
-	 public Set<Passenger> getpSet() {
-		return pSet;
+	public void setTrip(Trip trip) {
+		this.trip = trip;
 	}
 
-	 public void setpSet(Set<Passenger> pSet) {
-		 this.pSet = pSet;
-	 }
+	public Customer getCustomer() {
+		return customer;
+	}
 
-	 public Booking(Long bookingId, Integer seatNumber, Trip trip, boolean deleted, Set<Passenger> pSet) {
-	
-		this.bookingId = bookingId;
+	public void setCustomer(Customer customer) {
+		this.customer = customer;
+	}
+
+	public Integer getSeatNumber() {
+		return seatNumber;
+	}
+
+	public void setSeatNumber(Integer seatNumber) {
 		this.seatNumber = seatNumber;
-		this.trip = trip;
+	}
+
+	public BookingStatus getStatus() {
+		return status;
+	}
+
+	public void setStatus(BookingStatus status) {
+		this.status = status;
+	}
+
+	public boolean isDeleted() {
+		return deleted;
+	}
+
+	public void setDeleted(boolean deleted) {
 		this.deleted = deleted;
-		this.pSet = pSet;
-	 }
+	}
 
-	
+	public LocalDateTime getBookingDate() {
+		return bookingDate;
+	}
 
-	
-	 
-	 
-	
+	public void setBookingDate(LocalDateTime bookingDate) {
+		this.bookingDate = bookingDate;
+	}
 
+	public List<Passenger> getPassengers() {
+		return passengers;
+	}
+
+	public void setPassengers(List<Passenger> passengers) {
+		this.passengers = passengers;
+	}
 }
