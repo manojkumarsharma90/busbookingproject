@@ -1,5 +1,8 @@
 package com.busbooking.service;
 
-public class BusBookingServiceImpl {
+import org.springframework.stereotype.Service;
+
+@Service
+public class BusBookingServiceImpl implements BusBookingService {
 
 }

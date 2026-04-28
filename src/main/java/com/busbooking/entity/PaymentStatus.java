@@ -2,6 +2,6 @@ package com.busbooking.entity;
 
 public enum PaymentStatus {
 
-	Success,
-    Failed
+	SUCCESS,
+    FAILED
 }

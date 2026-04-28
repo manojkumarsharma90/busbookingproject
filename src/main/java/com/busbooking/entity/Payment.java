@@ -19,7 +19,7 @@ public class Payment {
     private Customer customer;
 
     @Enumerated(EnumType.STRING)
-    @Column(columnDefinition = "payment_status_type")
+
     private PaymentStatus paymentStatus;
 
     public Booking getBooking() {

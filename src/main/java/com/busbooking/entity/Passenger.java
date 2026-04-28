@@ -1,83 +1,57 @@
 package com.busbooking.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 
 @Entity
-@Table(name = "passenger")
-
+@Table(name = "passengers")
 public class Passenger {
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Integer pId;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long passengerId;
 
-	private String pName;
+    @Column(nullable = false)
+    private String name;
 
-	private Integer pAge;
+    private Integer age;
 
-	private String seatNo;
+    private String gender;
 
-	@ManyToOne()
-	@JoinColumn(name = "bookingId")
-	private Booking trip;
+    @Column(nullable = false)
+    private String seatNo;
 
-	public Passenger() {
+    @ManyToOne
+    @JoinColumn(name = "booking_id")
+    private Booking booking;
 
-	}
+    public Passenger() {}
 
-	public Booking getTrip() {
-		return trip;
-	}
+    public Passenger(Long passengerId, String name, Integer age, String gender,
+                     String seatNo, Booking booking) {
+        this.passengerId = passengerId;
+        this.name = name;
+        this.age = age;
+        this.gender = gender;
+        this.seatNo = seatNo;
+        this.booking = booking;
+    }
 
-	public void setTrip(Booking trip) {
-		this.trip = trip;
-	}
+    public Long getPassengerId() { return passengerId; }
+    public void setPassengerId(Long passengerId) { this.passengerId = passengerId; }
 
-	public Passenger(Integer pId, String pName, Integer pAge, String seatNo, Booking trip) {
-		super();
-		this.pId = pId;
-		this.pName = pName;
-		this.pAge = pAge;
-		this.seatNo = seatNo;
-		this.trip = trip;
-	}
+    public String getName() { return name; }
+    public void setName(String name) { this.name = name; }
 
-	public Integer getpId() {
-		return pId;
-	}
+    public Integer getAge() { return age; }
+    public void setAge(Integer age) { this.age = age; }
 
-	public void setpId(Integer pId) {
-		this.pId = pId;
-	}
+    public String getGender() { return gender; }
+    public void setGender(String gender) { this.gender = gender; }
 
-	public String getpName() {
-		return pName;
-	}
+    public String getSeatNo() { return seatNo; }
+    public void setSeatNo(String seatNo) { this.seatNo = seatNo; }
 
-	public void setpName(String pName) {
-		this.pName = pName;
-	}
-
-	public Integer getpAge() {
-		return pAge;
-	}
-
-	public void setpAge(Integer pAge) {
-		this.pAge = pAge;
-	}
-
-	public String getSeatNo() {
-		return seatNo;
-	}
-
-	public void setSeatNo(String seatNo) {
-		this.seatNo = seatNo;
-	}
-
+    public Booking getBooking() { return booking; }
+    public void setBooking(Booking booking) { this.booking = booking; }
 }
+
