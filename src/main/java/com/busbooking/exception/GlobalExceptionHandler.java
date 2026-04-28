@@ -31,7 +31,7 @@ public class GlobalExceptionHandler {
 	}
 
 	@ExceptionHandler(BadRequestException.class)
-	public ResponseEntity<ErrorMessageDto> handleBadRequest(BadRequestException ex) {
+	public ResponseEntity<ErrorMessageDto> handleBadRequest(com.busbooking.exception.BadRequestException ex) {
 		return buildError(ex.getMessage(), HttpStatus.BAD_REQUEST);
 	}
 

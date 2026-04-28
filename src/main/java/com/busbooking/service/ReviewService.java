@@ -1,6 +1,14 @@
 package com.busbooking.service;
 
 
+import java.time.LocalDateTime;
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.stereotype.Service;
+
 import com.busbooking.dto.ReviewDto;
 import com.busbooking.entity.Review;
 import com.busbooking.entity.Trip;
@@ -9,14 +17,6 @@ import com.busbooking.exception.ResourceNotFoundException;
 import com.busbooking.repository.ReviewRepo;
 import com.busbooking.repository.TripRepo;
 import com.busbooking.repository.UserRepo;
-import org.apache.coyote.BadRequestException;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.stereotype.Service;
-
-import java.time.LocalDateTime;
-import java.util.List;
 
 @Service
 public class ReviewService {
@@ -41,7 +41,7 @@ public class ReviewService {
                 .orElseThrow(() -> new ResourceNotFoundException("User not found"));
 
         if (user.getCustomer() == null) {
-            throw new BadRequestException("User does not have a customer profile");
+            throw new com.busbooking.exception.BadRequestException("User does not have a customer profile");
         }
 
         Trip trip = tripRepo.findById(dto.getTripId())
@@ -72,8 +72,7 @@ public class ReviewService {
                 .orElseThrow(() -> new ResourceNotFoundException("User not found"));
 
         if (user.getCustomer() == null) {
-            throw new BadRequestException("User does not have a customer profile");
-        }
+        	throw new com.busbooking.exception.BadRequestException("User does not have a customer profile");        }
 
         return reviewRepo.findByCustomer_CustomerId(user.getCustomer().getCustomerId());
     }
