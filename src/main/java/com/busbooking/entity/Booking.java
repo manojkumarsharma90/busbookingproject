@@ -26,7 +26,7 @@ public class Booking {
 
     @Enumerated(EnumType.STRING)
     @Column(columnDefinition = "varchar(20) default 'Available'")
-    private BookingStatus status = BookingStatus.Available;
+    private BookingStatus status = BookingStatus.AVAILABLE;
 
     private boolean deleted = false;
 
