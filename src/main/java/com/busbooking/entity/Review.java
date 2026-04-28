@@ -26,6 +26,8 @@ public class Review {
 
     }
 
+
+
     public Customer getCustomer() {
         return customer;
     }
@@ -71,6 +73,15 @@ public class Review {
     }
 
     public void setReviewDate(LocalDateTime reviewDate) {
+        this.reviewDate = reviewDate;
+    }
+
+    public Review(Long reviewId, Customer customer, Trip trip, Integer rating, String comment, LocalDateTime reviewDate) {
+        this.reviewId = reviewId;
+        this.customer = customer;
+        this.trip = trip;
+        this.rating = rating;
+        this.comment = comment;
         this.reviewDate = reviewDate;
     }
 }
