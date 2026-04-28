@@ -9,6 +9,8 @@ public class Bus {
     private String registrationNumber;
     private String type;
     private Integer capacity;
+    @ManyToOne @JoinColumn(name = "office_id")
+    private AgencyOffice office;
 	public Long getBusId() {
 		return busId;
 	}
@@ -33,12 +35,19 @@ public class Bus {
 	public void setCapacity(Integer capacity) {
 		this.capacity = capacity;
 	}
-	public Bus(Long busId, String registrationNumber, String type, Integer capacity) {
+	public AgencyOffice getOffice() {
+		return office;
+	}
+	public void setOffice(AgencyOffice office) {
+		this.office = office;
+	}
+    public Bus(Long busId, String registrationNumber, String type, Integer capacity, AgencyOffice office) {
 		super();
 		this.busId = busId;
 		this.registrationNumber = registrationNumber;
 		this.type = type;
 		this.capacity = capacity;
+		this.office = office;
 	}
-    public Bus() {}
+	public Bus() {}
 }
