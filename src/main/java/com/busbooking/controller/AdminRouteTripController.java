@@ -17,57 +17,52 @@ import org.springframework.web.bind.annotation.RestController;
 import com.busbooking.entity.Route;
 import com.busbooking.entity.Trip;
 import com.busbooking.service.RouteTripService;
-
 @RestController
 @RequestMapping("/admin")
 @CrossOrigin
 public class AdminRouteTripController {
-
 	@Autowired
 	private RouteTripService routeTripService;
-
-
 	@GetMapping("/routes")
 	public List<Route> getAllRoutes() {
 		return routeTripService.getAllRoutes();
 	}
+	
 	@GetMapping("/routes/{id}")
 	public Route getRouteById(@PathVariable Long id) {
 		return routeTripService.getRouteById(id);
 	}
-
+	
 	@PostMapping("/routes")
 	public Route addRoute(@RequestBody Route route) {
 		return routeTripService.addRoute(route);
 	}
+	
 	@PutMapping("/routes/{id}")
 	public Route updateRoute(@PathVariable Long id, @RequestBody Route route) {
 		return routeTripService.updateRoute(id, route);
 	}
-
+	
 	@DeleteMapping("/routes/{id}")
 	public ResponseEntity<String> deleteRoute(@PathVariable Long id) {
 		routeTripService.deleteRoute(id);
 		return ResponseEntity.ok("Route deleted successfully");
 	}
-
-
-
+	
 	@GetMapping("/trips")
 	public List<Trip> getAllTrips() {
 		return routeTripService.getAllTrips();
 	}
-
 	@GetMapping("/trips/{id}")
 	public Trip getTripById(@PathVariable Long id) {
 		return routeTripService.getTripById(id);
 	}
-
+	
 	@PostMapping("/trips")
 	public Trip addTrip(@RequestBody Trip trip) {
 		return routeTripService.addTrip(trip);
 	}
-
+	
 	@PutMapping("/trips/{id}")
 	public Trip updateTrip(@PathVariable Long id, @RequestBody Trip trip) {
 		return routeTripService.updateTrip(id, trip);
