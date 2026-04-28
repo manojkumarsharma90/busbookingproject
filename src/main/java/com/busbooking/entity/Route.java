@@ -11,6 +11,17 @@ public class Route {
     private String toCity;
     private Integer breakPoints;
     private Integer duration;
+public Route() {
+		
+	}
+    public Route(Long routeId, String fromCity, String toCity, Integer breakPoints, Integer duration) {
+		super();
+		this.routeId = routeId;
+		this.fromCity = fromCity;
+		this.toCity = toCity;
+		this.breakPoints = breakPoints;
+		this.duration = duration;
+	}
 
 	public Long getRouteId() {
 		return routeId;
@@ -23,6 +34,8 @@ public class Route {
 	public String getFromCity() {
 		return fromCity;
 	}
+
+	
 
 	public void setFromCity(String fromCity) {
 		this.fromCity = fromCity;
@@ -52,8 +65,6 @@ public class Route {
 		this.duration = duration;
 	}
 
-	public Route() {
-		
-	}
+	
     
 }

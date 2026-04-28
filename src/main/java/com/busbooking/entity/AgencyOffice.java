@@ -1,5 +1,6 @@
 package com.busbooking.entity;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -7,9 +8,6 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name="agency_offices")
@@ -20,20 +18,22 @@ public class AgencyOffice {
 @GeneratedValue(strategy = GenerationType.IDENTITY)
 private Integer officeId;
 
-@ManyToOne()
-@JoinColumn(name="agencyId")
-private Agency agencyId;
+
 
 private String officeMail;
 
 private String officeContactPersonName;
 
+@Column(length=10)
 private String officeContactNumber;
 
-@ManyToOne()
-@JoinColumn(name="agencyId")
+@ManyToOne
+@JoinColumn(name="agency_id")
 private Agency agency;
 
+@ManyToOne
+@JoinColumn(name="office_address_id")
+private Address officeAddress;
 
 public AgencyOffice() {
 	super();
@@ -41,17 +41,15 @@ public AgencyOffice() {
 
 
 
-public AgencyOffice(Integer officeId, Agency agencyId, String officeMail, String officeContactPersonName,
-		String officeContactNumber, Agency agency) {
-	super();
-	this.officeId = officeId;
-	this.agencyId = agencyId;
-	this.officeMail = officeMail;
-	this.officeContactPersonName = officeContactPersonName;
-	this.officeContactNumber = officeContactNumber;
-	this.agency = agency;
-}
+public AgencyOffice(Integer officeId, String officeMail, 
+	    String officeContactPersonName, String officeContactNumber, Agency agency) {
 
+	    this.officeId = officeId;
+	    this.officeMail = officeMail;
+	    this.officeContactPersonName = officeContactPersonName;
+	    this.officeContactNumber = officeContactNumber;
+	    this.agency = agency;
+	}
 
 
 public Agency getAgency() {
@@ -74,13 +72,6 @@ public void setOfficeId(Integer officeId) {
 	this.officeId = officeId;
 }
 
-public Agency getAgencyId() {
-	return agencyId;
-}
-
-public void setAgencyId(Agency agencyId) {
-	this.agencyId = agencyId;
-}
 
 public String getOfficeMail() {
 	return officeMail;
