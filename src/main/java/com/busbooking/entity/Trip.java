@@ -1,7 +1,15 @@
 package com.busbooking.entity;
-import jakarta.persistence.*;
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
 
 @Entity @Table(name = "trips")
 public class Trip {
@@ -29,13 +37,35 @@ public class Trip {
 
     private LocalDateTime departureTime;
     private LocalDateTime arrivalTime;
-    private LocalDateTime tripDate;
+    private LocalDate tripDate;
     private Integer availableSeats;
     private BigDecimal fare;
     
         public Trip() {
-		// TODO Auto-generated constructor stub
+		
 	}
+        
+        
+
+		public Trip(Long tripId, Route route, Bus bus, Address boardingAddress, Address droppingAddress, Driver driver1,
+				Driver driver2, LocalDateTime departureTime, LocalDateTime arrivalTime, LocalDate tripDate,
+				Integer availableSeats, BigDecimal fare) {
+			super();
+			this.tripId = tripId;
+			this.route = route;
+			this.bus = bus;
+			this.boardingAddress = boardingAddress;
+			this.droppingAddress = droppingAddress;
+			this.driver1 = driver1;
+			this.driver2 = driver2;
+			this.departureTime = departureTime;
+			this.arrivalTime = arrivalTime;
+			this.tripDate = tripDate;
+			this.availableSeats = availableSeats;
+			this.fare = fare;
+		}
+
+
 
 		public Long getTripId() {
 			return tripId;
@@ -109,11 +139,11 @@ public class Trip {
 			this.arrivalTime = arrivalTime;
 		}
 
-		public LocalDateTime getTripDate() {
+		public LocalDate getTripDate() {
 			return tripDate;
 		}
 
-		public void setTripDate(LocalDateTime tripDate) {
+		public void setTripDate(LocalDate tripDate) {
 			this.tripDate = tripDate;
 		}
 
