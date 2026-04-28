@@ -16,7 +16,7 @@ public class AgencyOffice {
 	
 @Id
 @GeneratedValue(strategy = GenerationType.IDENTITY)
-private Integer officeId;
+private Long officeId;
 
 
 
@@ -41,7 +41,7 @@ public AgencyOffice() {
 
 
 
-public AgencyOffice(Integer officeId, String officeMail, 
+public AgencyOffice(Long officeId, String officeMail, 
 	    String officeContactPersonName, String officeContactNumber, Agency agency) {
 
 	    this.officeId = officeId;
@@ -64,11 +64,11 @@ public void setAgency(Agency agency) {
 
 
 
-public Integer getOfficeId() {
+public Long getOfficeId() {
 	return officeId;
 }
 
-public void setOfficeId(Integer officeId) {
+public void setOfficeId(Long officeId) {
 	this.officeId = officeId;
 }
 
