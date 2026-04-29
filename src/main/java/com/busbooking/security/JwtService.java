@@ -43,13 +43,11 @@ public class JwtService {
 	}
 
 	private SecretKey getSignKey() {
-		byte[] keyBytes = Decoders.BASE64.decode(
-				java.util.Base64.getEncoder().encodeToString(SECRET.getBytes()));
-		return Keys.hmacShaKeyFor(keyBytes);
+	    return Keys.hmacShaKeyFor(SECRET.getBytes());
 	}
 
 	public String extractUsername(String token) {
-		return extractClaim(token, Claims::getSubject);
+		return extractClaim(token, Claims::getSubject);  // changes here to remove double encoding
 	}
 
 	@SuppressWarnings("unchecked")

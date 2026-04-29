@@ -25,9 +25,12 @@ import com.busbooking.entity.Trip;
 import com.busbooking.service.BookingService;
 import com.busbooking.service.ReviewService;
 
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+
 @RestController
 @CrossOrigin
 @RequestMapping("/bus")
+@SecurityRequirement(name = "BearerAuth")
 public class BusBookingController {
 
 	@Autowired
