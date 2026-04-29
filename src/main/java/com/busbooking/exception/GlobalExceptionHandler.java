@@ -3,6 +3,7 @@ package com.busbooking.exception;
 import java.time.LocalDateTime;
 
 import org.apache.coyote.BadRequestException;
+import org.apache.coyote.BadRequestException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;

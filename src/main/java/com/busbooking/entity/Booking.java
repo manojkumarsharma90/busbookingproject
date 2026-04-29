@@ -25,9 +25,9 @@ public class Booking {
     private Integer seatNumber;
 
     @Enumerated(EnumType.STRING)
-    @Column(columnDefinition = "varchar(20) default 'Available'")
     private BookingStatus status = BookingStatus.AVAILABLE;
 
+    @Column(nullable = true)
     private boolean deleted = false;
 
     private LocalDateTime bookingDate;
