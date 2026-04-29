@@ -76,4 +76,48 @@ public class AdminRouteTripController {
 		routeTripService.deleteTrip(id);
 		return ResponseEntity.ok("Trip deleted successfully");
 	}
+	
+	@GetMapping("/routes/search/{fromCity}/{toCity}")
+	public List<Route> getRoutesByCities(
+	        @PathVariable String fromCity,
+	        @PathVariable String toCity) {
+
+	    return routeTripService.getRoutesByCities(fromCity, toCity);
+	}
+
+
+	
+	@GetMapping("/routes/from/{fromCity}")
+	public List<Route> getRoutesByFromCity(
+	        @PathVariable String fromCity) {
+
+	    return routeTripService.getRoutesByFromCity(fromCity);
+	}
+
+
+	
+	@GetMapping("/trips/route/{routeId}")
+	public List<Trip> getTripsByRouteId(
+	        @PathVariable Long routeId) {
+
+	    return routeTripService.getTripsByRouteId(routeId);
+	}
+
+
+	
+	@GetMapping("/trips/bus/{busId}")
+	public List<Trip> getTripsByBusId(
+	        @PathVariable Long busId) {
+
+	    return routeTripService.getTripsByBusId(busId);
+	}
+
+
+	
+	@GetMapping("/trips/seats/{seats}")
+	public List<Trip> getTripsByAvailableSeats(
+	        @PathVariable Integer seats) {
+
+	    return routeTripService.getTripsByAvailableSeats(seats);
+	}
 }

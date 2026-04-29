@@ -30,7 +30,25 @@ public class RouteTripService {
 	@Autowired
 	private AddressRepo addressRepo;
 
+	public List<Route> getRoutesByCities(String fromCity, String toCity) {
+	    return routeRepo.findByFromCityIgnoreCaseAndToCityIgnoreCase(fromCity, toCity);
+	}
 
+	public List<Route> getRoutesByFromCity(String fromCity) {
+	    return routeRepo.findByFromCityIgnoreCase(fromCity);
+	}
+
+	public List<Trip> getTripsByRouteId(Long routeId) {
+	    return tripRepo.findByRoute_RouteId(routeId);
+	}
+
+	public List<Trip> getTripsByBusId(Long busId) {
+	    return tripRepo.findByBus_BusId(busId);
+	}
+
+	public List<Trip> getTripsByAvailableSeats(Integer seats) {
+	    return tripRepo.findByAvailableSeatsGreaterThan(seats);
+	}
 
 	public List<Route> getAllRoutes() {
 		return routeRepo.findAll();
