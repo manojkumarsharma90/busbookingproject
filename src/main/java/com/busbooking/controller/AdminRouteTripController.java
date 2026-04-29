@@ -17,9 +17,12 @@ import org.springframework.web.bind.annotation.RestController;
 import com.busbooking.entity.Route;
 import com.busbooking.entity.Trip;
 import com.busbooking.service.RouteTripService;
+
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 @RestController
 @RequestMapping("/admin")
 @CrossOrigin
+@SecurityRequirement(name = "BearerAuth")
 public class AdminRouteTripController {
 	@Autowired
 	private RouteTripService routeTripService;

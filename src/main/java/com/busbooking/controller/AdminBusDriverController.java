@@ -18,9 +18,12 @@ import com.busbooking.entity.Bus;
 import com.busbooking.entity.Driver;
 import com.busbooking.service.BusDriverService;
 
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+
 @RestController
 @RequestMapping("/admin")
 @CrossOrigin
+@SecurityRequirement(name = "BearerAuth")
 public class AdminBusDriverController {
 
 	@Autowired

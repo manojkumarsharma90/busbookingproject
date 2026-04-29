@@ -27,8 +27,7 @@ public class SecurityConfig {
 
 	private final JwtAuthFilter jwtAuthFilter;
 
-	// Constructor injection — JwtAuthFilter no longer depends on anything
-	// defined in THIS class, so no circular dependency
+	
 	public SecurityConfig(JwtAuthFilter jwtAuthFilter) {
 		this.jwtAuthFilter = jwtAuthFilter;
 	}
@@ -38,8 +37,7 @@ public class SecurityConfig {
 		return new BCryptPasswordEncoder();
 	}
 
-	// UserDetailsService bean has been moved to CustomUserDetailsService.java
-	// This was the root cause of the circular dependency
+	
 
 	@Bean
 	public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
