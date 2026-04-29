@@ -1,6 +1,6 @@
 package com.busbooking.repository;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -13,14 +13,10 @@ import com.busbooking.entity.Trip;
 @Repository
 public interface TripRepo extends JpaRepository<Trip, Long> {
 
-	@Query("SELECT t FROM Trip t WHERE t.route.fromCity = :fromCity " +
-			"AND t.route.toCity = :toCity " +
-			"AND t.tripDate >= :startOfDay AND t.tripDate < :endOfDay " +
-			"AND t.availableSeats > 0")
-	List<Trip> searchTrips(@Param("fromCity") String fromCity,
-						   @Param("toCity") String toCity,
-						   @Param("startOfDay") LocalDateTime startOfDay,
-						   @Param("endOfDay") LocalDateTime endOfDay);
+	@Query("SELECT t FROM Trip t WHERE LOWER(t.route.fromCity) = LOWER(:fromCity) "
+			+ "AND LOWER(t.route.toCity) = LOWER(:toCity) " + "AND t.tripDate = :date " + "AND t.availableSeats > 0")
+	List<Trip> searchTrips(@Param("fromCity") String fromCity, @Param("toCity") String toCity,
+			@Param("date") LocalDate date);
 
 	List<Trip> findByRoute_RouteId(Long routeId);
 

@@ -1,45 +1,45 @@
 package com.busbooking.dto;
 
 public class ReviewDto {
+	
+	private Long tripId;
+	
+	private Integer rating;
+	
+	private String comment;
 
-    private Long tripId;
+	public ReviewDto() {
+		super();
+	}
 
-    private Integer rating;
+	public ReviewDto(Long tripId, Integer rating, String comment) {
+		super();
+		this.tripId = tripId;
+		this.rating = rating;
+		this.comment = comment;
+	}
 
-    private String comment;
+	public Long getTripId() {
+		return tripId;
+	}
 
-    public ReviewDto() {
-        super();
-    }
+	public void setTripId(Long tripId) {
+		this.tripId = tripId;
+	}
 
-    public ReviewDto(Long tripId, Integer rating, String comment) {
-        super();
-        this.tripId = tripId;
-        this.rating = rating;
-        this.comment = comment;
-    }
+	public Integer getRating() {
+		return rating;
+	}
 
-    public Long getTripId() {
-        return tripId;
-    }
+	public void setRating(Integer rating) {
+		this.rating = rating;
+	}
 
-    public void setTripId(Long tripId) {
-        this.tripId = tripId;
-    }
+	public String getComment() {
+		return comment;
+	}
 
-    public Integer getRating() {
-        return rating;
-    }
-
-    public void setRating(Integer rating) {
-        this.rating = rating;
-    }
-
-    public String getComment() {
-        return comment;
-    }
-
-    public void setComment(String comment) {
-        this.comment = comment;
-    }
+	public void setComment(String comment) {
+		this.comment = comment;
+	}
 }

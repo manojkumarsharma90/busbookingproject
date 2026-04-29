@@ -10,4 +10,7 @@ import com.busbooking.entity.Passenger;
 
 public interface PassengerRepo extends JpaRepository<Passenger, Integer> {
 	List<Passenger> findByBooking_BookingId(Long bookingId);
+
+	@Query("SELECT p.seatNo FROM Passenger p WHERE p.booking.trip.tripId = :tripId AND p.booking.status = 'BOOKED'")
+	List<String> findBookedSeatNumbers(@Param("tripId") Long tripId);
 }
