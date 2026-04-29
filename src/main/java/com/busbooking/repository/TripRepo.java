@@ -21,4 +21,5 @@ public interface TripRepo extends JpaRepository<Trip, Long> {
 	List<Trip> findByRoute_RouteId(Long routeId);
 
 	List<Trip> findByBus_BusId(Long busId);
+	List<Trip> findByAvailableSeatsGreaterThan(Integer seats);
 }
