@@ -78,12 +78,12 @@ public class BusBookingController {
 	}
 
 	@GetMapping("/bookings")
-	public ResponseEntity<List<Booking>> getAllBookingsForCustomer() {
+	public ResponseEntity<List<BookingResponseDto>> getAllBookingsForCustomer() {
 		return ResponseEntity.ok(bookingService.getMyBookings());
 	}
 
 	@PutMapping("/bookings/{id}/cancel")
-	public ResponseEntity<Booking> cancelBooking(@PathVariable Long id) {
+	public ResponseEntity<BookingResponseDto> cancelBooking(@PathVariable Long id) {
 		return ResponseEntity.ok(bookingService.cancelBooking(id));
 	}
 
