@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.busbooking.dto.BookingDto;
+import com.busbooking.dto.BookingResponseDto;
 import com.busbooking.dto.ReviewDto;
 import com.busbooking.entity.Booking;
 import com.busbooking.entity.Review;
@@ -69,9 +70,9 @@ public class BusBookingController {
 	// ============================
 
 	@PostMapping("/addbusbooking")
-	public ResponseEntity<Booking> bookBus(@RequestBody BookingDto dto) {
+	public ResponseEntity<BookingResponseDto> bookBus(@RequestBody BookingDto dto) {
 
-		Booking book = bookingService.bookBus(dto);
+		BookingResponseDto book = bookingService.bookBus(dto);
 
 		return new ResponseEntity<>(book, HttpStatus.CREATED);
 	}

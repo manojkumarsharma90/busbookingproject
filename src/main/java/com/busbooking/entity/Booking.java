@@ -23,8 +23,8 @@ public class Booking {
     @JoinColumn(name = "customer_id")
     private Customer customer;
 
-    @Column(nullable = false)
-    private Integer seatNumber;
+//    @Column(nullable = false)
+//    private Integer seatNumber;
 
     @Enumerated(EnumType.STRING)
     private BookingStatus status = BookingStatus.AVAILABLE;
@@ -40,12 +40,11 @@ public class Booking {
 
     public Booking() {}
 
-    public Booking(Long bookingId, Trip trip, Customer customer, Integer seatNumber,
+    public Booking(Long bookingId, Trip trip, Customer customer,
                    BookingStatus status, boolean deleted, LocalDateTime bookingDate) {
         this.bookingId = bookingId;
         this.trip = trip;
         this.customer = customer;
-        this.seatNumber = seatNumber;
         this.status = status;
         this.deleted = deleted;
         this.bookingDate = bookingDate;
@@ -59,9 +58,6 @@ public class Booking {
 
     public Customer getCustomer() { return customer; }
     public void setCustomer(Customer customer) { this.customer = customer; }
-
-    public Integer getSeatNumber() { return seatNumber; }
-    public void setSeatNumber(Integer seatNumber) { this.seatNumber = seatNumber; }
 
     public BookingStatus getStatus() { return status; }
     public void setStatus(BookingStatus status) { this.status = status; }

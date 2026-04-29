@@ -1,8 +1,8 @@
 package com.busbooking.service;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -14,6 +14,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import com.busbooking.dto.BookingDto;
+import com.busbooking.dto.BookingMapper;
+import com.busbooking.dto.BookingResponseDto;
 import com.busbooking.dto.PassengerDto;
 import com.busbooking.entity.Booking;
 import com.busbooking.entity.BookingStatus;
@@ -34,196 +36,179 @@ import com.busbooking.repository.UserRepo;
 @Service
 public class BookingService {
 
-    @Autowired
-    private UserRepo userRepo;
+	@Autowired
+	private UserRepo userRepo;
 
-    @Autowired
-    private TripRepo tripRepo;
+	@Autowired
+	private TripRepo tripRepo;
 
-    @Autowired
-    private BookingRepo bookingRepo;
+	@Autowired
+	private BookingRepo bookingRepo;
 
-    @Autowired
-    private PassengerRepo passengerRepo;
+	@Autowired
+	private PassengerRepo passengerRepo;
 
-    @Autowired
-    private PaymentRepo paymentRepo;
+	@Autowired
+	private PaymentRepo paymentRepo;
 
-    public List<Trip> searchTrips(String fromCity, String toCity, LocalDate date) {
-        LocalDateTime startOfDay = date.atStartOfDay();
-        LocalDateTime endOfDay = date.atTime(LocalTime.MAX);
+	@Autowired
+	private BookingMapper mapper;
 
-        return tripRepo.searchTrips(fromCity, toCity, startOfDay, endOfDay);
-    }
+	// ============================
+	// Trip Search + Seat Availability
+	// ============================
 
-    public Trip getTripById(Long tripId) {
-        return tripRepo.findById(tripId)
-                .orElseThrow(() -> new ResourceNotFoundException("Trip not found with id " + tripId));
-    }
+	public List<Trip> searchTrips(String fromCity, String toCity, LocalDate date) {
+	    return tripRepo.searchTrips(fromCity, toCity, date);
+	}
 
-    public List<String> getBookedSeats(Long tripId) {
+	public Trip getTripById(Long tripId) {
+		return tripRepo.findById(tripId)
+				.orElseThrow(() -> new ResourceNotFoundException("Trip not found with id " + tripId));
+	}
 
-        tripRepo.findById(tripId)
-                .orElseThrow(() -> new ResourceNotFoundException("Trip not found with id " + tripId));
+	public List<String> getBookedSeats(Long tripId) {
 
-        List<Booking> bookedSeats =
-                bookingRepo.findByTrip_TripIdAndStatus(tripId, BookingStatus.BOOKED);
+	    tripRepo.findById(tripId)
+	            .orElseThrow(() -> new ResourceNotFoundException("Trip not found"));
 
-        List<String> seats = new ArrayList<>();
+	    return passengerRepo.findBookedSeatNumbers(tripId); 
+	}
 
-        for (Booking b : bookedSeats) {
-            if (!b.isDeleted()) {
-                seats.add(String.valueOf(b.getSeatNumber()));
-            }
-        }
 
-        return seats;
-    }
+	// ============================
+	// Booking
+	// ============================
 
-    public Booking bookBus(BookingDto dto) {
+	public BookingResponseDto bookBus(BookingDto dto) {
 
-        if (dto.getPassenger() == null || dto.getPassenger().isEmpty()) {
-            throw new BadRequestException("At least one passenger is required for booking");
-        }
+	    if (dto.getPassenger() == null || dto.getPassenger().isEmpty()) {
+	        throw new BadRequestException("At least one passenger is required");
+	    }
 
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        String username = auth.getName();
+	    Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+	    String username = auth.getName();
 
-        User user = userRepo.findByUsername(username)
-                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+	    User user = userRepo.findByUsername(username)
+	            .orElseThrow(() -> new ResourceNotFoundException("User not found"));
 
-        if (user.getCustomer() == null) {
-            throw new BadRequestException(
-                    "User does not have a customer profile. Please complete registration."
-            );
-        }
+	    Trip trip = tripRepo.findById(dto.getTripId())
+	            .orElseThrow(() -> new ResourceNotFoundException("Trip not found"));
 
-        Trip trip = tripRepo.findById(dto.getTripId())
-                .orElseThrow(() -> new ResourceNotFoundException(
-                        "Trip not found with id " + dto.getTripId()
-                ));
+	    if (dto.getPassenger().size() > trip.getAvailableSeats()) {
+	        throw new SeatNotAvailableException("Not enough seats available");
+	    }
 
-        if (dto.getPassenger().size() > trip.getAvailableSeats()) {
-            throw new SeatNotAvailableException("Enough seats are not available");
-        }
+	    List<Booking> existingBookings = bookingRepo
+	            .findByTrip_TripIdAndStatus(dto.getTripId(), BookingStatus.BOOKED);
 
-        List<Booking> existingBookings =
-                bookingRepo.findByTrip_TripIdAndStatus(dto.getTripId(), BookingStatus.BOOKED);
+	    Set<String> bookedSeats = passengerRepo.findBookedSeatNumbers(dto.getTripId())
+	            .stream()
+	            .map(s -> s.toUpperCase().trim())
+	            .collect(Collectors.toSet());   // updated by me
 
-        Set<Integer> bookedSeatNumbers = existingBookings.stream()
-                .filter(b -> !b.isDeleted())
-                .map(Booking::getSeatNumber)
-                .collect(Collectors.toSet());
+	    Booking booking = new Booking();
+	    booking.setTrip(trip);
+	    booking.setCustomer(user.getCustomer());
+	    booking.setStatus(BookingStatus.BOOKED);
+	    booking.setBookingDate(LocalDateTime.now());
 
-        Booking savedBooking = null;
+	    List<Passenger> passengers = new ArrayList<>();
 
-        for (PassengerDto p : dto.getPassenger()) {
+	    for (PassengerDto p : dto.getPassenger()) {
 
-            int seatNum = Integer.parseInt(p.getSeatNo());
+	        int seatNum = Integer.parseInt(p.getSeatNo());
 
-            if (bookedSeatNumbers.contains(seatNum)) {
-                throw new SeatNotAvailableException("Seat " + seatNum + " is already booked");
-            }
+	        if (bookedSeats.contains(seatNum)) {
+	            throw new SeatNotAvailableException("Seat already booked");
+	        }
 
-            if (seatNum < 1 || seatNum > trip.getBus().getCapacity()) {
-                throw new BadRequestException(
-                        "Seat " + seatNum + " is invalid. Bus has "
-                                + trip.getBus().getCapacity() + " seats."
-                );
-            }
+	        Passenger passenger = new Passenger();
+	        passenger.setName(p.getName());
+	        passenger.setAge(p.getAge());
+	        passenger.setGender(p.getGender());
+	        passenger.setSeatNo(p.getSeatNo());
+	        passenger.setBooking(booking);
 
-            bookedSeatNumbers.add(seatNum);
+	        passengers.add(passenger);
+	    }
 
-            Booking booking = new Booking();
-            booking.setTrip(trip);
-            booking.setCustomer(user.getCustomer());
-            booking.setSeatNumber(seatNum);
-            booking.setStatus(BookingStatus.BOOKED);
-            booking.setBookingDate(LocalDateTime.now());
+	    booking.setPassengers(passengers);
 
-            savedBooking = bookingRepo.save(booking);
+	    Booking savedBooking = bookingRepo.save(booking);
 
-            Passenger passenger = new Passenger();
-            passenger.setName(p.getName());
-            passenger.setAge(p.getAge());
-            passenger.setGender(p.getGender());
-            passenger.setSeatNo(p.getSeatNo());
-            passenger.setBooking(savedBooking);
+	    Payment payment = new Payment();
+	    payment.setBooking(savedBooking);
+	    payment.setCustomer(user.getCustomer());
+	    payment.setAmount(
+	    	    trip.getFare().multiply(BigDecimal.valueOf(passengers.size()))
+	    	);
+	    payment.setPaymentDate(LocalDateTime.now());
+	    payment.setPaymentStatus(PaymentStatus.SUCCESS);
 
-            passengerRepo.save(passenger);
+	    paymentRepo.save(payment);
 
-            Payment payment = new Payment();
-            payment.setBooking(savedBooking);
-            payment.setCustomer(user.getCustomer());
-            payment.setAmount(trip.getFare());
-            payment.setPaymentDate(LocalDateTime.now());
-            payment.setPaymentStatus(PaymentStatus.SUCCESS);
+	    trip.setAvailableSeats(trip.getAvailableSeats() - passengers.size());
+	    tripRepo.save(trip);
 
-            paymentRepo.save(payment);
-        }
+	    return mapper.toDto(savedBooking);  // changes done by me
+	}
+	
+	
 
-        trip.setAvailableSeats(trip.getAvailableSeats() - dto.getPassenger().size());
-        tripRepo.save(trip);
+	public List<Booking> getMyBookings() {
+		Long custId = getCustomerId();
+		return bookingRepo.findByCustomer_CustomerIdAndDeletedFalseOrderByBookingDateDesc(custId);
+	}
 
-        return savedBooking;
-    }
+	public Booking cancelBooking(Long bookingId) {
 
-    public List<Booking> getMyBookings() {
-        Long custId = getCustomerId();
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		String username = auth.getName();
 
-        return bookingRepo
-                .findByCustomer_CustomerIdAndDeletedFalseOrderByBookingDateDesc(custId);
-    }
+		User user = userRepo.findByUsername(username)
+				.orElseThrow(() -> new ResourceNotFoundException("User not found"));
 
-    public Booking cancelBooking(Long bookingId) {
+		Booking booking = bookingRepo.findById(bookingId)
+				.orElseThrow(() -> new ResourceNotFoundException("Booking not found with id " + bookingId));
 
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        String username = auth.getName();
+		if (user.getCustomer() == null ||
+				!booking.getCustomer().getCustomerId().equals(user.getCustomer().getCustomerId())) {
+			throw new BadRequestException("You can only cancel your own bookings");
+		}
 
-        User user = userRepo.findByUsername(username)
-                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+		if (booking.isDeleted()) {
+			throw new BadRequestException("Booking is already cancelled");
+		}
 
-        Booking booking = bookingRepo.findById(bookingId)
-                .orElseThrow(() -> new ResourceNotFoundException(
-                        "Booking not found with id " + bookingId
-                ));
+		booking.setDeleted(true);
+		booking.setStatus(BookingStatus.AVAILABLE);
+		bookingRepo.save(booking);
 
-        if (user.getCustomer() == null ||
-                !booking.getCustomer().getCustomerId()
-                        .equals(user.getCustomer().getCustomerId())) {
+		// restore the seat
+		Trip trip = booking.getTrip();
+		trip.setAvailableSeats(trip.getAvailableSeats() + 1);
+		tripRepo.save(trip);
 
-            throw new BadRequestException("You can only cancel your own bookings");
-        }
+		return booking;
+	}
 
-        if (booking.isDeleted()) {
-            throw new BadRequestException("Booking is already cancelled");
-        }
 
-        booking.setDeleted(true);
-        booking.setStatus(BookingStatus.AVAILABLE);
+	// ============================
+	// Helpers
+	// ============================
 
-        bookingRepo.save(booking);
+	public Long getCustomerId() {
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		String username = auth.getName();
 
-        Trip trip = booking.getTrip();
-        trip.setAvailableSeats(trip.getAvailableSeats() + 1);
+		User user = userRepo.findByUsername(username)
+				.orElseThrow(() -> new ResourceNotFoundException("User not found"));
 
-        tripRepo.save(trip);
+		if (user.getCustomer() == null) {
+			throw new BadRequestException("User does not have a customer profile");
+		}
 
-        return booking;
-    }
-
-    public Long getCustomerId() {
-
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        String username = auth.getName();
-
-        User user = userRepo.findByUsername(username)
-                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
-
-        if (user.getCustomer() == null) {
-            throw new BadRequestException("User does not have a customer profile");
-        }
-
-        return user.getCustomer().getCustomerId();
-    }
+		return user.getCustomer().getCustomerId();
+	}
 }
