@@ -156,12 +156,17 @@ public class BookingService {
 	
 	
 
-	public List<Booking> getMyBookings() {
+	public List<BookingResponseDto> getMyBookings() {
 		Long custId = getCustomerId();
-		return bookingRepo.findByCustomer_CustomerIdAndDeletedFalseOrderByBookingDateDesc(custId);
+		
+		  List<Booking> bookings =
+			        bookingRepo.findByCustomer_CustomerIdAndDeletedFalseOrderByBookingDateDesc(custId);
+		return bookings.stream()
+		        .map(mapper::toDto)  
+		        .toList();
 	}
 
-	public Booking cancelBooking(Long bookingId) {
+	public BookingResponseDto cancelBooking(Long bookingId) {
 
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		String username = auth.getName();
@@ -190,7 +195,7 @@ public class BookingService {
 		trip.setAvailableSeats(trip.getAvailableSeats() + 1);
 		tripRepo.save(trip);
 
-		return booking;
+		return mapper.toDto(booking);
 	}
 
 

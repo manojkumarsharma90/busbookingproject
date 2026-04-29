@@ -56,5 +56,7 @@ public class BookingResponseDto {
 	public void setPassengers(List<PassengerDto> passengers) {
 		this.passengers = passengers;
 	}
+	
+	
 
 }
