@@ -12,7 +12,7 @@ public class BookingResponseDto {
     private String customerName;
     private Integer totalSeats;
 
-    private TripInfoDto trip;   
+    private TripResponseDto trip;   
     private List<PassengerDto> passengers;
 	public Long getBookingId() {
 		return bookingId;
@@ -44,10 +44,10 @@ public class BookingResponseDto {
 	public void setTotalSeats(Integer totalSeats) {
 		this.totalSeats = totalSeats;
 	}
-	public TripInfoDto getTrip() {
+	public TripResponseDto getTrip() {
 		return trip;
 	}
-	public void setTrip(TripInfoDto trip) {
+	public void setTrip(TripResponseDto trip) {
 		this.trip = trip;
 	}
 	public List<PassengerDto> getPassengers() {

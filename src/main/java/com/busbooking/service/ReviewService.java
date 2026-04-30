@@ -9,7 +9,9 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
-import com.busbooking.dto.ReviewDto;
+import com.busbooking.dto.BookingMapper;
+import com.busbooking.dto.ReviewRequestDto;
+import com.busbooking.dto.ReviewResponseDto;
 import com.busbooking.entity.Review;
 import com.busbooking.entity.Trip;
 import com.busbooking.entity.User;
@@ -29,10 +31,13 @@ public class ReviewService {
 
     @Autowired
     private UserRepo userRepo;
+    
+    @Autowired
+    private BookingMapper mapper;
 
 
     // add a review for a trip
-    public Review addReview(ReviewDto dto) {
+    public ReviewResponseDto addReview(ReviewRequestDto dto) {
 
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String username = auth.getName();
@@ -54,16 +59,22 @@ public class ReviewService {
         review.setComment(dto.getComment());
         review.setReviewDate(LocalDateTime.now());
 
-        return reviewRepo.save(review);
+        Review sReview= reviewRepo.save(review);
+        
+        return mapper.mapToReviewResponseDto(sReview);
+        
+         
     }
 
     // get all reviews for a trip
-    public List<Review> getReviewsByTrip(Long tripId) {
-        return reviewRepo.findByTrip_TripId(tripId);
+    public List<ReviewResponseDto> getReviewsByTrip(Long tripId) {
+        List<Review> review= reviewRepo.findByTrip_TripId(tripId);
+        
+        return review.stream().map(mapper::mapToReviewResponseDto).toList();
     }
 
     // get reviews by logged in customer
-    public List<Review> getMyReviews() {
+    public List<ReviewResponseDto> getMyReviews() {
 
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String username = auth.getName();
@@ -74,6 +85,9 @@ public class ReviewService {
         if (user.getCustomer() == null) {
         	throw new com.busbooking.exception.BadRequestException("User does not have a customer profile");        }
 
-        return reviewRepo.findByCustomer_CustomerId(user.getCustomer().getCustomerId());
+        List<Review> review= reviewRepo.findByCustomer_CustomerId(user.getCustomer().getCustomerId());
+        
+        return review.stream().map(mapper::mapToReviewResponseDto).toList();
+        
     }
 }

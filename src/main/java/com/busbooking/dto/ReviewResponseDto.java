@@ -1,6 +1,6 @@
 package com.busbooking.dto;
 
-public class ReviewDto {
+public class ReviewResponseDto {
 	
 	private Long tripId;
 	
@@ -8,11 +8,11 @@ public class ReviewDto {
 	
 	private String comment;
 
-	public ReviewDto() {
+	public ReviewResponseDto() {
 		super();
 	}
 
-	public ReviewDto(Long tripId, Integer rating, String comment) {
+	public ReviewResponseDto(Long tripId, Integer rating, String comment) {
 		super();
 		this.tripId = tripId;
 		this.rating = rating;
