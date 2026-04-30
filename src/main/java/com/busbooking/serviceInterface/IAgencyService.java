@@ -11,53 +11,49 @@ import com.busbooking.entity.AgencyOffice;
 
 public interface IAgencyService {
 
-    // ============================
-    // AGENCY
-    // ============================
+	// AGENCY
 
-    List<Agency> getAllAgencies();
+	List<AgencyResponseDto> getAllAgencies();
 
-    Agency getAgencyById(Long id);
+	AgencyResponseDto getAgencyById(Long id);
 
-    Agency addAgency(Agency agency);
+	AgencyResponseDto addAgency(AgencyRequestDto dto);
+	
+	AgencyResponseDto updateAgency(Long id, AgencyRequestDto dto);
 
-    Agency updateAgency(Long id, Agency agency);
+	void deleteAgency(Long id);
 
-    void deleteAgency(Long id);
+	AgencyResponseDto getAgencyByName(String name);
 
-    AgencyResponseDto getAgencyByName(String name);
+	boolean agencyExists(String name);
 
-    boolean agencyExists(String name);
+	AgencyResponseDto getAgencyByEmail(String email);
 
-    AgencyResponseDto getAgencyByEmail(String email);
+	long countAgencies();
 
-    long countAgencies();
+	AgencyResponseDto updateAgencyPartial(Long id, AgencyRequestDto dto);
 
-    AgencyResponseDto updateAgencyPartial(Long id, AgencyRequestDto dto);
+	// AGENCY OFFICE
 
-    // ============================
-    // AGENCY OFFICE
-    // ============================
+	List<AgencyOfficeResponseDto> getAllOffices();
 
-    List<AgencyOffice> getAllOffices();
+    AgencyOfficeResponseDto getOfficeById(Long id);
+	
+	List<AgencyOfficeResponseDto> getOfficesByAgency(Long agencyId);
 
-    AgencyOffice getOfficeById(Long id);
+	AgencyOfficeResponseDto addOffice(AgencyOfficeRequestDto dto);
 
-    List<AgencyOfficeResponseDto> getOfficesByAgency(Long agencyId);
+	AgencyOfficeResponseDto updateOffice(Long id, AgencyOfficeRequestDto dto);
 
-    AgencyOfficeResponseDto addOffice(AgencyOfficeRequestDto dto);
+	void deleteOffice(Long id);
 
-    AgencyOffice updateOffice(Long id, AgencyOffice office);
+	long countOfficesByAgency(Long agencyId);
 
-    void deleteOffice(Long id);
+	AgencyOfficeResponseDto getOfficeByEmail(String email);
 
-    long countOfficesByAgency(Long agencyId);
+	List<AgencyOfficeResponseDto> getByContactPerson(String name);
 
-    AgencyOfficeResponseDto getOfficeByEmail(String email);
+	List<AgencyOfficeResponseDto> addOffices(List<AgencyOfficeRequestDto> dtos);
 
-    List<AgencyOfficeResponseDto> getByContactPerson(String name);
-
-    List<AgencyOfficeResponseDto> addOffices(List<AgencyOfficeRequestDto> dtos);
-
-    void deleteOfficesByAgency(Long agencyId);
+	void deleteOfficesByAgency(Long agencyId);
 }

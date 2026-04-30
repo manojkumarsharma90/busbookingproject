@@ -16,6 +16,7 @@ import com.busbooking.entity.AgencyOffice;
 import com.busbooking.repository.AgencyOfficeRepo;
 import com.busbooking.repository.AgencyRepo;
 import com.busbooking.serviceInterface.IAgencyService;
+
 @Service
 public class AgencyService implements IAgencyService {
 
@@ -25,89 +26,91 @@ public class AgencyService implements IAgencyService {
 	@Autowired
 	private AgencyOfficeRepo officeRepo;
 
-	// ============================
 	// AGENCY
-	// ============================
 
-	public List<Agency> getAllAgencies() {
-		return agencyRepo.findAll();
+	public List<AgencyResponseDto> getAllAgencies() {
+		List<Agency> agencyList =agencyRepo.findAll();
+		return agencyList.stream().map(AgencyMapper::toDTO).toList();
 	}
 
-	public Agency getAgencyById(Long id) {
-		return agencyRepo.findById(id).orElseThrow(() -> new RuntimeException("Agency not found"));
+	public AgencyResponseDto getAgencyById(Long id) {
+		Agency agency = agencyRepo.findById(id).orElseThrow(() -> new RuntimeException("Agency not found"));
+		return AgencyMapper.toDTO(agency);
 	}
 
-	public Agency addAgency(Agency agency) {
-		return agencyRepo.save(agency);
-	}
+	public AgencyResponseDto addAgency(AgencyRequestDto dto) { // CHANGED
+        Agency agency = AgencyMapper.toEntity(dto); // CHANGED
+        return AgencyMapper.toDTO(agencyRepo.save(agency)); // CHANGED
+    }
 
-	public Agency updateAgency(Long id, Agency agency) {
+	public AgencyResponseDto updateAgency(Long id, AgencyRequestDto dto) { // CHANGED
+        Agency existing = agencyRepo.findById(id)
+                .orElseThrow(() -> new RuntimeException("Agency not found"));
 
-		Agency existing = agencyRepo.findById(id).orElseThrow(() -> new RuntimeException("Agency not found"));
+        existing.setName(dto.getName());
+        existing.setContactPersonName(dto.getContactPersonName());
+        existing.setEmail(dto.getEmail());
+        existing.setPhone(dto.getPhone());
 
-		existing.setName(agency.getName());
-		existing.setContactPersonName(agency.getContactPersonName());
-		existing.setEmail(agency.getEmail());
-		existing.setPhone(agency.getPhone());
-
-		return agencyRepo.save(existing);
-	}
+        return AgencyMapper.toDTO(agencyRepo.save(existing)); // CHANGED
+    }
 
 	public void deleteAgency(Long id) {
 		agencyRepo.deleteById(id);
 	}
 
 	public AgencyResponseDto getAgencyByName(String name) {
-	    Agency agency = agencyRepo.findByNameIgnoreCase(name)
-	            .orElseThrow(() -> new RuntimeException("Agency not found"));
-	    return AgencyMapper.toDTO(agency);
+		Agency agency = agencyRepo.findByNameIgnoreCase(name)
+				.orElseThrow(() -> new RuntimeException("Agency not found"));
+		return AgencyMapper.toDTO(agency);
 	}
 
 	public boolean agencyExists(String name) {
-	    return agencyRepo.existsByNameIgnoreCase(name);
+		return agencyRepo.existsByNameIgnoreCase(name);
 	}
 
 	public AgencyResponseDto getAgencyByEmail(String email) {
-	    Agency agency = agencyRepo.findByEmailIgnoreCase(email)
-	            .orElseThrow(() -> new RuntimeException("Agency not found"));
+		Agency agency = agencyRepo.findByEmailIgnoreCase(email)
+				.orElseThrow(() -> new RuntimeException("Agency not found"));
 
-	    return AgencyMapper.toDTO(agency);
+		return AgencyMapper.toDTO(agency);
 	}
 
 	public long countAgencies() {
-	    return agencyRepo.count();
+		return agencyRepo.count();
 	}
 
 	public AgencyResponseDto updateAgencyPartial(Long id, AgencyRequestDto dto) {
-	    Agency agency = agencyRepo.findById(id)
-	            .orElseThrow(() -> new RuntimeException("Agency not found"));
+		Agency agency = agencyRepo.findById(id).orElseThrow(() -> new RuntimeException("Agency not found"));
 
-	    if (dto.getName() != null) agency.setName(dto.getName());
-	    if (dto.getEmail() != null) agency.setEmail(dto.getEmail());
-	    if (dto.getPhone() != null) agency.setPhone(dto.getPhone());
-	    if (dto.getContactPersonName() != null)
-	        agency.setContactPersonName(dto.getContactPersonName());
+		if (dto.getName() != null)
+			agency.setName(dto.getName());
+		if (dto.getEmail() != null)
+			agency.setEmail(dto.getEmail());
+		if (dto.getPhone() != null)
+			agency.setPhone(dto.getPhone());
+		if (dto.getContactPersonName() != null)
+			agency.setContactPersonName(dto.getContactPersonName());
 
-	    return AgencyMapper.toDTO(agencyRepo.save(agency));
+		return AgencyMapper.toDTO(agencyRepo.save(agency));
 	}
 
-	// ============================
 	// AGENCY OFFICE
-	// ============================
 
-	public List<AgencyOffice> getAllOffices() {
-		return officeRepo.findAll();
-	}
+	public List<AgencyOfficeResponseDto> getAllOffices() { // CHANGED
+        return officeRepo.findAll().stream()
+                .map(AgencyOfficeMapper::toDTO)
+                .toList();
+    }
 
-	public AgencyOffice getOfficeById(Long id) {
-		return officeRepo.findById(id).orElseThrow(() -> new RuntimeException("Office not found"));
-	}
+	public AgencyOfficeResponseDto getOfficeById(Long id) { // CHANGED
+        AgencyOffice office = officeRepo.findById(id)
+                .orElseThrow(() -> new RuntimeException("Office not found"));
+        return AgencyOfficeMapper.toDTO(office);
+    }
 
 	public List<AgencyOfficeResponseDto> getOfficesByAgency(Long agencyId) {
-	    return officeRepo.findByAgency_AgencyId(agencyId)
-	            .stream()
-	            .map(AgencyOfficeMapper::toDTO)
-	            .toList();
+		return officeRepo.findByAgency_AgencyId(agencyId).stream().map(AgencyOfficeMapper::toDTO).toList();
 	}
 
 	public AgencyOfficeResponseDto addOffice(AgencyOfficeRequestDto dto) {
@@ -126,62 +129,60 @@ public class AgencyService implements IAgencyService {
 		return AgencyOfficeMapper.toDTO(saved);
 	}
 
-	public AgencyOffice updateOffice(Long id, AgencyOffice office) {
+	public AgencyOfficeResponseDto updateOffice(Long id, AgencyOfficeRequestDto dto) { // CHANGED
+        AgencyOffice existing = officeRepo.findById(id)
+                .orElseThrow(() -> new RuntimeException("Office not found"));
 
-		AgencyOffice existing = officeRepo.findById(id).orElseThrow(() -> new RuntimeException("Office not found"));
+        existing.setOfficeMail(dto.getOfficeMail());
+        existing.setOfficeContactPersonName(dto.getOfficeContactPersonName());
+        existing.setOfficeContactNumber(dto.getOfficeContactNumber());
 
-		existing.setOfficeMail(office.getOfficeMail());
-		existing.setOfficeContactPersonName(office.getOfficeContactPersonName());
-		existing.setOfficeContactNumber(office.getOfficeContactNumber());
+        if (dto.getAgencyId() != null) { // CHANGED
+            Agency agency = agencyRepo.findById(dto.getAgencyId())
+                    .orElseThrow(() -> new RuntimeException("Agency not found"));
+            existing.setAgency(agency);
+        }
 
-		if (office.getAgency() != null && office.getAgency().getAgencyId() != null) {
-			Agency agency = agencyRepo.findById(office.getAgency().getAgencyId())
-					.orElseThrow(() -> new RuntimeException("Agency not found"));
-			existing.setAgency(agency);
-		}
-
-		return officeRepo.save(existing);
-	}
+        return AgencyOfficeMapper.toDTO(officeRepo.save(existing)); // CHANGED
+    }
 
 	public void deleteOffice(Long id) {
 		officeRepo.deleteById(id);
 	}
 
 	public long countOfficesByAgency(Long agencyId) {
-	    return officeRepo.countByAgency_AgencyId(agencyId);
+		return officeRepo.countByAgency_AgencyId(agencyId);
 	}
 
 	public AgencyOfficeResponseDto getOfficeByEmail(String email) {
-	    AgencyOffice office = officeRepo.findByOfficeMailIgnoreCase(email)
-	            .orElseThrow(() -> new RuntimeException("Office not found"));
+		AgencyOffice office = officeRepo.findByOfficeMailIgnoreCase(email)
+				.orElseThrow(() -> new RuntimeException("Office not found"));
 
-	    return AgencyOfficeMapper.toDTO(office);
+		return AgencyOfficeMapper.toDTO(office);
 	}
 
 	public List<AgencyOfficeResponseDto> getByContactPerson(String name) {
-	    return officeRepo.findByOfficeContactPersonNameIgnoreCase(name)
-	            .stream()
-	            .map(AgencyOfficeMapper::toDTO)
-	            .toList();
+		return officeRepo.findByOfficeContactPersonNameIgnoreCase(name).stream().map(AgencyOfficeMapper::toDTO)
+				.toList();
 	}
 
 	public List<AgencyOfficeResponseDto> addOffices(List<AgencyOfficeRequestDto> dtos) {
 
-	    return dtos.stream().map(dto -> {
-	        Agency agency = agencyRepo.findById(dto.getAgencyId())
-	                .orElseThrow(() -> new RuntimeException("Agency not found"));
+		return dtos.stream().map(dto -> {
+			Agency agency = agencyRepo.findById(dto.getAgencyId())
+					.orElseThrow(() -> new RuntimeException("Agency not found"));
 
-	        AgencyOffice office = new AgencyOffice();
-	        office.setOfficeMail(dto.getOfficeMail());
-	        office.setOfficeContactPersonName(dto.getOfficeContactPersonName());
-	        office.setOfficeContactNumber(dto.getOfficeContactNumber());
-	        office.setAgency(agency);
+			AgencyOffice office = new AgencyOffice();
+			office.setOfficeMail(dto.getOfficeMail());
+			office.setOfficeContactPersonName(dto.getOfficeContactPersonName());
+			office.setOfficeContactNumber(dto.getOfficeContactNumber());
+			office.setAgency(agency);
 
-	        return AgencyOfficeMapper.toDTO(officeRepo.save(office));
-	    }).toList();
+			return AgencyOfficeMapper.toDTO(officeRepo.save(office));
+		}).toList();
 	}
 
 	public void deleteOfficesByAgency(Long agencyId) {
-	    officeRepo.deleteByAgency_AgencyId(agencyId);
+		officeRepo.deleteByAgency_AgencyId(agencyId);
 	}
 }

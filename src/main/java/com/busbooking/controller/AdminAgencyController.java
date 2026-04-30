@@ -36,32 +36,31 @@ public class AdminAgencyController {
     private AgencyService agencyService;
 
 
-    // ============================
     // AGENCY APIs
-    // ============================
 
     // GET all agencies
     @GetMapping("/agencies")
-    public List<Agency> getAllAgencies() {
+    public List<AgencyResponseDto> getAllAgencies() {
         return agencyService.getAllAgencies();
     }
 
     // GET agency by id
     @GetMapping("/agencies/{id}")
-    public Agency getAgencyById(@PathVariable Long id) {
+    public AgencyResponseDto getAgencyById(@PathVariable Long id) {
         return agencyService.getAgencyById(id);
     }
 
     // ADD agency
     @PostMapping("/agencies")
-    public Agency addAgency(@RequestBody Agency agency) {
-        return agencyService.addAgency(agency);
+    public AgencyResponseDto addAgency(@RequestBody AgencyRequestDto dto) { // CHANGED
+        return agencyService.addAgency(dto); // CHANGED
     }
 
     // UPDATE agency
     @PutMapping("/agencies/{id}")
-    public Agency updateAgency(@PathVariable Long id, @RequestBody Agency agency) {
-        return agencyService.updateAgency(id, agency);
+    public AgencyResponseDto updateAgency(@PathVariable Long id,
+                                          @RequestBody AgencyRequestDto dto) { // CHANGED
+        return agencyService.updateAgency(id, dto); // CHANGED
     }
 
     // DELETE agency
@@ -103,23 +102,22 @@ public class AdminAgencyController {
     }
 
 
-    // ============================
     // AGENCY OFFICE APIs
-    // ============================
 
     // GET all offices
     @GetMapping("/agency-offices")
-    public List<AgencyOffice> getAllOffices() {
-        return agencyService.getAllOffices();
+    public List<AgencyOfficeResponseDto> getAllOffices() { // CHANGED
+        return agencyService.getAllOffices(); // CHANGED
     }
 
     // GET office by id
     @GetMapping("/agency-offices/{id}")
-    public AgencyOffice getOfficeById(@PathVariable Long id) {
-        return agencyService.getOfficeById(id);
+    public AgencyOfficeResponseDto getOfficeById(@PathVariable Long id) { // CHANGED
+        return agencyService.getOfficeById(id); // CHANGED
     }
 
     // @GetMapping("/agency-offices/agency/{agencyId}")
+    @GetMapping("/agency-offices/agency/{agencyId}") // CHANGED (was commented)
     public List<AgencyOfficeResponseDto> getOfficesByAgency(@PathVariable Long agencyId) {
         return agencyService.getOfficesByAgency(agencyId);
     }
@@ -132,8 +130,9 @@ public class AdminAgencyController {
 
     // UPDATE office
     @PutMapping("/agency-offices/{id}")
-    public AgencyOffice updateOffice(@PathVariable Long id, @RequestBody AgencyOffice office) {
-        return agencyService.updateOffice(id, office);
+    public AgencyOfficeResponseDto updateOffice(@PathVariable Long id,
+                                                @RequestBody AgencyOfficeRequestDto dto) { // CHANGED
+        return agencyService.updateOffice(id, dto); // CHANGED
     }
 
     // DELETE office
