@@ -15,9 +15,9 @@ import com.busbooking.entity.Agency;
 import com.busbooking.entity.AgencyOffice;
 import com.busbooking.repository.AgencyOfficeRepo;
 import com.busbooking.repository.AgencyRepo;
-
+import com.busbooking.serviceInterface.IAgencyService;
 @Service
-public class AgencyService {
+public class AgencyService implements IAgencyService {
 
 	@Autowired
 	private AgencyRepo agencyRepo;
@@ -56,24 +56,24 @@ public class AgencyService {
 	public void deleteAgency(Long id) {
 		agencyRepo.deleteById(id);
 	}
-	
+
 	public AgencyResponseDto getAgencyByName(String name) {
 	    Agency agency = agencyRepo.findByNameIgnoreCase(name)
 	            .orElseThrow(() -> new RuntimeException("Agency not found"));
 	    return AgencyMapper.toDTO(agency);
 	}
-	
+
 	public boolean agencyExists(String name) {
 	    return agencyRepo.existsByNameIgnoreCase(name);
 	}
-	
+
 	public AgencyResponseDto getAgencyByEmail(String email) {
 	    Agency agency = agencyRepo.findByEmailIgnoreCase(email)
 	            .orElseThrow(() -> new RuntimeException("Agency not found"));
 
 	    return AgencyMapper.toDTO(agency);
 	}
-	
+
 	public long countAgencies() {
 	    return agencyRepo.count();
 	}
@@ -90,7 +90,7 @@ public class AgencyService {
 
 	    return AgencyMapper.toDTO(agencyRepo.save(agency));
 	}
-	
+
 	// ============================
 	// AGENCY OFFICE
 	// ============================
@@ -146,25 +146,25 @@ public class AgencyService {
 	public void deleteOffice(Long id) {
 		officeRepo.deleteById(id);
 	}
-	
+
 	public long countOfficesByAgency(Long agencyId) {
 	    return officeRepo.countByAgency_AgencyId(agencyId);
 	}
-	
+
 	public AgencyOfficeResponseDto getOfficeByEmail(String email) {
 	    AgencyOffice office = officeRepo.findByOfficeMailIgnoreCase(email)
 	            .orElseThrow(() -> new RuntimeException("Office not found"));
 
 	    return AgencyOfficeMapper.toDTO(office);
 	}
-	
+
 	public List<AgencyOfficeResponseDto> getByContactPerson(String name) {
 	    return officeRepo.findByOfficeContactPersonNameIgnoreCase(name)
 	            .stream()
 	            .map(AgencyOfficeMapper::toDTO)
 	            .toList();
 	}
-	
+
 	public List<AgencyOfficeResponseDto> addOffices(List<AgencyOfficeRequestDto> dtos) {
 
 	    return dtos.stream().map(dto -> {
@@ -180,7 +180,7 @@ public class AgencyService {
 	        return AgencyOfficeMapper.toDTO(officeRepo.save(office));
 	    }).toList();
 	}
-	
+
 	public void deleteOfficesByAgency(Long agencyId) {
 	    officeRepo.deleteByAgency_AgencyId(agencyId);
 	}
