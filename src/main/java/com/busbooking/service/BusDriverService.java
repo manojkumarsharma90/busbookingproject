@@ -19,9 +19,10 @@ import com.busbooking.repository.AddressRepo;
 import com.busbooking.repository.AgencyOfficeRepo;
 import com.busbooking.repository.BusRepo;
 import com.busbooking.repository.DriverRepo;
+import com.busbooking.serviceInterface.IBusDriverService;
 
 @Service
-public class BusDriverService {
+public class BusDriverService implements IBusDriverService {
 
     @Autowired
     private BusRepo busRepo;
@@ -35,7 +36,7 @@ public class BusDriverService {
     @Autowired
     private AddressRepo addressRepo;
 
-    // ================= BUS APIs =================
+    // BUS APIs
 
     public List<BusDto> getAllBuses() {
         return busRepo.findAll()
@@ -126,7 +127,7 @@ public class BusDriverService {
         busRepo.delete(bus);
     }
 
-    // ================= DRIVER APIs =================
+    // DRIVER APIs
 
     public List<DriverDto> getAllDrivers() {
         return driverRepo.findAll()
