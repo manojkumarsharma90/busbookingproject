@@ -25,7 +25,20 @@ public interface TripRepo extends JpaRepository<Trip, Long> {
 	List<Trip> findByBus_BusId(Long busId);
 	List<Trip> findByAvailableSeatsGreaterThan(Integer seats);
 
+
 	
+	
+
+		
+
+
+	List<Trip> findByFareLessThan(BigDecimal fare);
+
+	List<Trip> findByTripDate(LocalDate date);
+
+	List<Trip> findByDepartureTimeAfter(LocalDateTime time);
+
+
 	
 	@Query("""
 		    SELECT t FROM Trip t 
@@ -42,10 +55,5 @@ public interface TripRepo extends JpaRepository<Trip, Long> {
 		        @Param("min") BigDecimal min,
 		        @Param("max") BigDecimal max);
 
-	List<Trip> findByFareLessThan(BigDecimal fare);
-
-	List<Trip> findByTripDate(LocalDate date);
-
-	List<Trip> findByDepartureTimeAfter(LocalDateTime time);
 
 }
