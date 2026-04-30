@@ -4,6 +4,7 @@ package com.busbooking.service;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import com.busbooking.serviceInterface.IReviewService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -21,7 +22,7 @@ import com.busbooking.repository.TripRepo;
 import com.busbooking.repository.UserRepo;
 
 @Service
-public class ReviewService {
+public class ReviewService implements IReviewService {
 
     @Autowired
     private ReviewRepo reviewRepo;
