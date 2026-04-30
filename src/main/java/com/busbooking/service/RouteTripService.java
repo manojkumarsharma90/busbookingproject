@@ -1,5 +1,8 @@
 package com.busbooking.service;
 
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,7 +12,11 @@ import com.busbooking.entity.Bus;
 import com.busbooking.entity.Driver;
 import com.busbooking.entity.Route;
 import com.busbooking.entity.Trip;
-import com.busbooking.repository.*;
+import com.busbooking.repository.AddressRepo;
+import com.busbooking.repository.BusRepo;
+import com.busbooking.repository.DriverRepo;
+import com.busbooking.repository.RouteRepo;
+import com.busbooking.repository.TripRepo;
 
 
 @Service
@@ -29,6 +36,25 @@ public class RouteTripService {
 
 	@Autowired
 	private AddressRepo addressRepo;
+	public List<Route> getRoutesByToCity(String toCity) {
+	    return routeRepo.findByToCityIgnoreCase(toCity);
+	}
+
+	public List<Route> getRoutesByDuration(Integer duration) {
+	    return routeRepo.findByDurationGreaterThan(duration);
+	}
+
+	public List<Trip> getTripsByFare(BigDecimal fare) {
+	    return tripRepo.findByFareLessThan(fare);
+	}
+
+	public List<Trip> getTripsByDate(LocalDate date) {
+	    return tripRepo.findByTripDate(date);
+	}
+
+	public List<Trip> getTripsByDepartureTime(LocalDateTime time) {
+	    return tripRepo.findByDepartureTimeAfter(time);
+	}
 
 	public List<Route> getRoutesByCities(String fromCity, String toCity) {
 	    return routeRepo.findByFromCityIgnoreCaseAndToCityIgnoreCase(fromCity, toCity);

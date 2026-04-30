@@ -11,4 +11,6 @@ import java.util.List;
 public interface RouteRepo extends JpaRepository<Route, Long> {
 	List<Route> findByFromCityIgnoreCaseAndToCityIgnoreCase(String fromCity, String toCity);
 	List<Route> findByFromCityIgnoreCase(String fromCity);
+	List<Route> findByToCityIgnoreCase(String toCity);
+	List<Route> findByDurationGreaterThan(Integer duration);
 }
