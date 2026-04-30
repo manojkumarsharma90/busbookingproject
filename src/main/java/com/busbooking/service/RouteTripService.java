@@ -17,10 +17,11 @@ import com.busbooking.repository.BusRepo;
 import com.busbooking.repository.DriverRepo;
 import com.busbooking.repository.RouteRepo;
 import com.busbooking.repository.TripRepo;
+import com.busbooking.serviceInterface.IRouteTripService;
 
 
 @Service
-public class RouteTripService {
+public class RouteTripService implements IRouteTripService{
 
 	@Autowired
 	private RouteRepo routeRepo;
