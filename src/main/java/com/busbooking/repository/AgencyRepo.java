@@ -11,4 +11,6 @@ import com.busbooking.entity.Agency;
 public interface AgencyRepo extends JpaRepository<Agency, Long> {
 	Optional<Agency> findByNameIgnoreCase(String name);
 	boolean existsByNameIgnoreCase(String name);
+	Optional<Agency> findByEmailIgnoreCase(String email);
+	boolean existsByEmailIgnoreCase(String email);
 }
