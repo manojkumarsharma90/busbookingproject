@@ -1,5 +1,8 @@
 package com.busbooking.controller;
 
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -106,8 +109,7 @@ public class AdminRouteTripController {
 
 	
 	@GetMapping("/trips/bus/{busId}")
-	public List<Trip> getTripsByBusId(
-	        @PathVariable Long busId) {
+	public List<Trip> getTripsByBusId(@PathVariable Long busId) {
 
 	    return routeTripService.getTripsByBusId(busId);
 	}
@@ -119,5 +121,37 @@ public class AdminRouteTripController {
 	        @PathVariable Integer seats) {
 
 	    return routeTripService.getTripsByAvailableSeats(seats);
+	}
+	
+
+	@GetMapping("/routes/to/{toCity}")
+	public List<Route> getRoutesByToCity(@PathVariable String toCity) {
+	    return routeTripService.getRoutesByToCity(toCity);
+	}
+
+
+	@GetMapping("/routes/duration/{duration}")
+	public List<Route> getRoutesByDuration(@PathVariable Integer duration) {
+	    return routeTripService.getRoutesByDuration(duration);
+	}
+
+	@GetMapping("/trips/fare/{fare}")
+	public List<Trip> getTripsByFare(@PathVariable BigDecimal fare) {
+	    return routeTripService.getTripsByFare(fare);
+	}
+
+
+	
+	@GetMapping("/trips/date/{date}")
+	public List<Trip> getTripsByDate(@PathVariable LocalDate date) {
+	    return routeTripService.getTripsByDate(date);
+	}
+
+
+	
+	@GetMapping("/trips/departure/{time}")
+	public List<Trip> getTripsByDepartureTime(
+	        @PathVariable LocalDateTime time) {
+	    return routeTripService.getTripsByDepartureTime(time);
 	}
 }

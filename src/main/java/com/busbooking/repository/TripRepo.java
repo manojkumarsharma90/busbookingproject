@@ -2,6 +2,7 @@ package com.busbooking.repository;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -23,6 +24,7 @@ public interface TripRepo extends JpaRepository<Trip, Long> {
 
 	List<Trip> findByBus_BusId(Long busId);
 	List<Trip> findByAvailableSeatsGreaterThan(Integer seats);
+
 	
 	
 	@Query("""
@@ -39,4 +41,11 @@ public interface TripRepo extends JpaRepository<Trip, Long> {
 		        @Param("date") LocalDate date,
 		        @Param("min") BigDecimal min,
 		        @Param("max") BigDecimal max);
+
+	List<Trip> findByFareLessThan(BigDecimal fare);
+
+	List<Trip> findByTripDate(LocalDate date);
+
+	List<Trip> findByDepartureTimeAfter(LocalDateTime time);
+
 }
