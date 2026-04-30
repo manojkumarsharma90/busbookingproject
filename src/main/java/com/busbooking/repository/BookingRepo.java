@@ -16,4 +16,8 @@ public interface BookingRepo extends JpaRepository<Booking, Long> {
 	List<Booking> findByCustomer_CustomerIdAndDeletedFalse(Long customerId);
 
 	List<Booking> findByCustomer_CustomerIdAndDeletedFalseOrderByBookingDateDesc(Long customerId);
+	
+	List<Booking> findByCustomer_CustomerIdAndStatusAndDeletedFalse(
+	        Long customerId, BookingStatus status);
 }
+

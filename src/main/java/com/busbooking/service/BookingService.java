@@ -17,6 +17,7 @@ import com.busbooking.dto.BookingDto;
 import com.busbooking.dto.BookingMapper;
 import com.busbooking.dto.BookingResponseDto;
 import com.busbooking.dto.PassengerDto;
+import com.busbooking.dto.TripResponseDto;
 import com.busbooking.entity.Booking;
 import com.busbooking.entity.BookingStatus;
 import com.busbooking.entity.Passenger;
@@ -58,14 +59,21 @@ public class BookingService {
 	// Trip Search + Seat Availability
 	// ============================
 
-	public List<Trip> searchTrips(String fromCity, String toCity, LocalDate date) {
-	    return tripRepo.searchTrips(fromCity, toCity, date);
-	}
+	public List<TripResponseDto> searchTrips(String fromCity, String toCity, LocalDate date) {
+	    List<Trip> trip= tripRepo.searchTrips(fromCity, toCity, date);
+	    
+	    return trip.stream().map(mapper::mapTrip).toList();
+	    
+	    }
+	
 
-	public Trip getTripById(Long tripId) {
-		return tripRepo.findById(tripId)
+	public TripResponseDto getTripById(Long tripId) {
+		Trip trip= tripRepo.findById(tripId)
 				.orElseThrow(() -> new ResourceNotFoundException("Trip not found with id " + tripId));
+		
+		return mapper.mapTrip(trip);
 	}
+	
 
 	public List<String> getBookedSeats(Long tripId) {
 
@@ -73,6 +81,26 @@ public class BookingService {
 	            .orElseThrow(() -> new ResourceNotFoundException("Trip not found"));
 
 	    return passengerRepo.findBookedSeatNumbers(tripId); 
+	}
+	
+	public List<TripResponseDto> getTripsByRoute(Long routeId) {
+	    return tripRepo.findByRoute_RouteId(routeId)
+	            .stream()
+	            .map(mapper::mapTrip)
+	            .toList();
+	}
+	
+	public List<TripResponseDto> searchTripsWithPrice(
+	        String fromCity,
+	        String toCity,
+	        LocalDate date,
+	        BigDecimal min,
+	        BigDecimal max) {
+
+	    return tripRepo.searchTripsWithPriceFilter(fromCity, toCity, date, min, max)
+	            .stream()
+	            .map(mapper::mapTrip)
+	            .toList();
 	}
 
 
@@ -192,11 +220,36 @@ public class BookingService {
 
 		// restore the seat
 		Trip trip = booking.getTrip();
-		trip.setAvailableSeats(trip.getAvailableSeats() + 1);
+		int passengerCount = booking.getPassengers().size();
+		trip.setAvailableSeats(trip.getAvailableSeats() + passengerCount);
 		tripRepo.save(trip);
 
 		return mapper.toDto(booking);
 	}
+	
+	
+	
+	public List<BookingResponseDto> getMyBookingsByStatus(String status) {
+
+	    Long customerId = getCustomerId();
+
+	    BookingStatus bookingStatus;
+
+	    try {
+	        bookingStatus = BookingStatus.valueOf(status.toUpperCase());
+	    } catch (Exception e) {
+	        throw new BadRequestException("Invalid booking status");
+	    }
+
+	    return bookingRepo
+	            .findByCustomer_CustomerIdAndStatusAndDeletedFalse(customerId, bookingStatus)
+	            .stream()
+	            .map(mapper::toDto)
+	            .toList();
+	}
+	
+	
+	
 
 
 	// ============================
