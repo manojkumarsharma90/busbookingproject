@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -33,9 +34,12 @@ import com.busbooking.repository.PassengerRepo;
 import com.busbooking.repository.PaymentRepo;
 import com.busbooking.repository.TripRepo;
 import com.busbooking.repository.UserRepo;
+import com.busbooking.serviceInterface.IBookingService;
+
+import jakarta.transaction.Transactional;
 
 @Service
-public class BookingService {
+public class BookingService implements IBookingService {
 
 	@Autowired
 	private UserRepo userRepo;
@@ -55,143 +59,122 @@ public class BookingService {
 	@Autowired
 	private BookingMapper mapper;
 
-	// ============================
 	// Trip Search + Seat Availability
-	// ============================
 
 	public List<TripResponseDto> searchTrips(String fromCity, String toCity, LocalDate date) {
-	    List<Trip> trip= tripRepo.searchTrips(fromCity, toCity, date);
-	    
-	    return trip.stream().map(mapper::mapTrip).toList();
-	    
-	    }
-	
+		List<Trip> trip = tripRepo.searchTrips(fromCity, toCity, date);
+
+		return trip.stream().map(mapper::mapTrip).toList();
+
+	}
 
 	public TripResponseDto getTripById(Long tripId) {
-		Trip trip= tripRepo.findById(tripId)
+		Trip trip = tripRepo.findById(tripId)
 				.orElseThrow(() -> new ResourceNotFoundException("Trip not found with id " + tripId));
-		
+
 		return mapper.mapTrip(trip);
 	}
-	
 
 	public List<String> getBookedSeats(Long tripId) {
 
-	    tripRepo.findById(tripId)
-	            .orElseThrow(() -> new ResourceNotFoundException("Trip not found"));
+		tripRepo.findById(tripId).orElseThrow(() -> new ResourceNotFoundException("Trip not found"));
 
-	    return passengerRepo.findBookedSeatNumbers(tripId); 
+		return passengerRepo.findBookedSeatNumbers(tripId);
 	}
-	
+
 	public List<TripResponseDto> getTripsByRoute(Long routeId) {
-	    return tripRepo.findByRoute_RouteId(routeId)
-	            .stream()
-	            .map(mapper::mapTrip)
-	            .toList();
-	}
-	
-	public List<TripResponseDto> searchTripsWithPrice(
-	        String fromCity,
-	        String toCity,
-	        LocalDate date,
-	        BigDecimal min,
-	        BigDecimal max) {
-
-	    return tripRepo.searchTripsWithPriceFilter(fromCity, toCity, date, min, max)
-	            .stream()
-	            .map(mapper::mapTrip)
-	            .toList();
+		return tripRepo.findByRoute_RouteId(routeId).stream().map(mapper::mapTrip).toList();
 	}
 
+	public List<TripResponseDto> searchTripsWithPrice(String fromCity, String toCity, LocalDate date, BigDecimal min,
+			BigDecimal max) {
 
-	// ============================
+		return tripRepo.searchTripsWithPriceFilter(fromCity, toCity, date, min, max).stream().map(mapper::mapTrip)
+				.toList();
+	}
+
 	// Booking
-	// ============================
 
+	@Transactional
 	public BookingResponseDto bookBus(BookingDto dto) {
 
-	    if (dto.getPassenger() == null || dto.getPassenger().isEmpty()) {
-	        throw new BadRequestException("At least one passenger is required");
-	    }
+		if (dto.getPassenger() == null || dto.getPassenger().isEmpty()) {
+			throw new BadRequestException("At least one passenger is required");
+		}
 
-	    Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-	    String username = auth.getName();
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		String username = auth.getName();
 
-	    User user = userRepo.findByUsername(username)
-	            .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+		User user = userRepo.findByUsername(username)
+				.orElseThrow(() -> new ResourceNotFoundException("User not found"));
 
-	    Trip trip = tripRepo.findById(dto.getTripId())
-	            .orElseThrow(() -> new ResourceNotFoundException("Trip not found"));
+		Trip trip = tripRepo.findById(dto.getTripId())
+				.orElseThrow(() -> new ResourceNotFoundException("Trip not found"));
 
-	    if (dto.getPassenger().size() > trip.getAvailableSeats()) {
-	        throw new SeatNotAvailableException("Not enough seats available");
-	    }
+		if (dto.getPassenger().size() > trip.getAvailableSeats()) {
+			throw new SeatNotAvailableException("Not enough seats available");
+		}
 
-	    List<Booking> existingBookings = bookingRepo
-	            .findByTrip_TripIdAndStatus(dto.getTripId(), BookingStatus.BOOKED);
+		List<Booking> existingBookings = bookingRepo.findByTrip_TripIdAndStatus(dto.getTripId(), BookingStatus.BOOKED);
 
-	    Set<String> bookedSeats = passengerRepo.findBookedSeatNumbers(dto.getTripId())
-	            .stream()
-	            .map(s -> s.toUpperCase().trim())
-	            .collect(Collectors.toSet());   // updated by me
+		Set<String> bookedSeats = passengerRepo.findBookedSeatNumbers(dto.getTripId()).stream()
+				.map(s -> s.toUpperCase().trim()).collect(Collectors.toSet()); // updated by me
 
-	    Booking booking = new Booking();
-	    booking.setTrip(trip);
-	    booking.setCustomer(user.getCustomer());
-	    booking.setStatus(BookingStatus.BOOKED);
-	    booking.setBookingDate(LocalDateTime.now());
+		Booking booking = new Booking();
+		booking.setTrip(trip);
+		booking.setCustomer(user.getCustomer());
+		booking.setStatus(BookingStatus.BOOKED);
+		booking.setBookingDate(LocalDateTime.now());
 
-	    List<Passenger> passengers = new ArrayList<>();
+		List<Passenger> passengers = new ArrayList<>();
+		Set<String> requestedSeats = new HashSet<>();
 
-	    for (PassengerDto p : dto.getPassenger()) {
+		for (PassengerDto p : dto.getPassenger()) {
 
-	        int seatNum = Integer.parseInt(p.getSeatNo());
+			String seat = p.getSeatNo().toUpperCase().trim();
 
-	        if (bookedSeats.contains(seatNum)) {
-	            throw new SeatNotAvailableException("Seat already booked");
-	        }
+			if (!requestedSeats.add(seat)) {
+				throw new BadRequestException("Duplicate seat in request: " + seat);
+			}
 
-	        Passenger passenger = new Passenger();
-	        passenger.setName(p.getName());
-	        passenger.setAge(p.getAge());
-	        passenger.setGender(p.getGender());
-	        passenger.setSeatNo(p.getSeatNo());
-	        passenger.setBooking(booking);
+			if (bookedSeats.contains(seat)) {
+				throw new SeatNotAvailableException("Seat already booked: " + seat);
+			}
 
-	        passengers.add(passenger);
-	    }
+			Passenger passenger = new Passenger();
+			passenger.setName(p.getName());
+			passenger.setAge(p.getAge());
+			passenger.setGender(p.getGender());
+			passenger.setSeatNo(seat);
+			passenger.setBooking(booking);
 
-	    booking.setPassengers(passengers);
+			passengers.add(passenger);
+		}
 
-	    Booking savedBooking = bookingRepo.save(booking);
+		booking.setPassengers(passengers);
 
-	    Payment payment = new Payment();
-	    payment.setBooking(savedBooking);
-	    payment.setCustomer(user.getCustomer());
-	    payment.setAmount(
-	    	    trip.getFare().multiply(BigDecimal.valueOf(passengers.size()))
-	    	);
-	    payment.setPaymentDate(LocalDateTime.now());
-	    payment.setPaymentStatus(PaymentStatus.SUCCESS);
+		Booking savedBooking = bookingRepo.save(booking);
 
-	    paymentRepo.save(payment);
+		Payment payment = new Payment();
+		payment.setBooking(savedBooking);
+		payment.setCustomer(user.getCustomer());
+		payment.setAmount(trip.getFare().multiply(BigDecimal.valueOf(passengers.size())));
+		payment.setPaymentDate(LocalDateTime.now());
+		payment.setPaymentStatus(PaymentStatus.SUCCESS);
 
-	    trip.setAvailableSeats(trip.getAvailableSeats() - passengers.size());
-	    tripRepo.save(trip);
+		paymentRepo.save(payment);
 
-	    return mapper.toDto(savedBooking);  // changes done by me
+		trip.setAvailableSeats(trip.getAvailableSeats() - passengers.size());
+		tripRepo.save(trip);
+
+		return mapper.toDto(savedBooking); // changes done by me
 	}
-	
-	
 
 	public List<BookingResponseDto> getMyBookings() {
 		Long custId = getCustomerId();
-		
-		  List<Booking> bookings =
-			        bookingRepo.findByCustomer_CustomerIdAndDeletedFalseOrderByBookingDateDesc(custId);
-		return bookings.stream()
-		        .map(mapper::toDto)  
-		        .toList();
+
+		List<Booking> bookings = bookingRepo.findByCustomer_CustomerIdAndDeletedFalseOrderByBookingDateDesc(custId);
+		return bookings.stream().map(mapper::toDto).toList();
 	}
 
 	public BookingResponseDto cancelBooking(Long bookingId) {
@@ -205,8 +188,8 @@ public class BookingService {
 		Booking booking = bookingRepo.findById(bookingId)
 				.orElseThrow(() -> new ResourceNotFoundException("Booking not found with id " + bookingId));
 
-		if (user.getCustomer() == null ||
-				!booking.getCustomer().getCustomerId().equals(user.getCustomer().getCustomerId())) {
+		if (user.getCustomer() == null
+				|| !booking.getCustomer().getCustomerId().equals(user.getCustomer().getCustomerId())) {
 			throw new BadRequestException("You can only cancel your own bookings");
 		}
 
@@ -215,7 +198,7 @@ public class BookingService {
 		}
 
 		booking.setDeleted(true);
-		booking.setStatus(BookingStatus.AVAILABLE);
+		booking.setStatus(BookingStatus.CANCELLED);
 		bookingRepo.save(booking);
 
 		// restore the seat
@@ -226,35 +209,24 @@ public class BookingService {
 
 		return mapper.toDto(booking);
 	}
-	
-	
-	
+
 	public List<BookingResponseDto> getMyBookingsByStatus(String status) {
 
-	    Long customerId = getCustomerId();
+		Long customerId = getCustomerId();
 
-	    BookingStatus bookingStatus;
+		BookingStatus bookingStatus;
 
-	    try {
-	        bookingStatus = BookingStatus.valueOf(status.toUpperCase());
-	    } catch (Exception e) {
-	        throw new BadRequestException("Invalid booking status");
-	    }
+		try {
+			bookingStatus = BookingStatus.valueOf(status.toUpperCase());
+		} catch (Exception e) {
+			throw new BadRequestException("Invalid booking status");
+		}
 
-	    return bookingRepo
-	            .findByCustomer_CustomerIdAndStatusAndDeletedFalse(customerId, bookingStatus)
-	            .stream()
-	            .map(mapper::toDto)
-	            .toList();
+		return bookingRepo.findByCustomer_CustomerIdAndStatusAndDeletedFalse(customerId, bookingStatus).stream()
+				.map(mapper::toDto).toList();
 	}
-	
-	
-	
 
-
-	// ============================
 	// Helpers
-	// ============================
 
 	public Long getCustomerId() {
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
