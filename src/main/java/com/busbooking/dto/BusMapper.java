@@ -2,6 +2,7 @@ package com.busbooking.dto;
 
 import com.busbooking.entity.Bus;
 
+
 public class BusMapper {
 
     public static BusDto toDto(Bus bus) {

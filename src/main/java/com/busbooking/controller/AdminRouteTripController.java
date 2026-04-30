@@ -17,6 +17,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.busbooking.dto.RouteRequestDto;
+import com.busbooking.dto.RouteResponseDto;
+import com.busbooking.dto.TripRequestDto;
+import com.busbooking.dto.TripResponseDto;
 import com.busbooking.entity.Route;
 import com.busbooking.entity.Trip;
 import com.busbooking.service.RouteTripService;
@@ -30,22 +34,22 @@ public class AdminRouteTripController {
 	@Autowired
 	private RouteTripService routeTripService;
 	@GetMapping("/routes")
-	public List<Route> getAllRoutes() {
+	public List<RouteResponseDto> getAllRoutes() {
 		return routeTripService.getAllRoutes();
 	}
 	
 	@GetMapping("/routes/{id}")
-	public Route getRouteById(@PathVariable Long id) {
+	public RouteResponseDto getRouteById(@PathVariable Long id) {
 		return routeTripService.getRouteById(id);
 	}
 	
 	@PostMapping("/routes")
-	public Route addRoute(@RequestBody Route route) {
+	public RouteResponseDto addRoute(@RequestBody RouteRequestDto route) {
 		return routeTripService.addRoute(route);
 	}
 	
 	@PutMapping("/routes/{id}")
-	public Route updateRoute(@PathVariable Long id, @RequestBody Route route) {
+	public RouteResponseDto updateRoute(@PathVariable Long id, @RequestBody RouteRequestDto route) {
 		return routeTripService.updateRoute(id, route);
 	}
 	
@@ -56,21 +60,21 @@ public class AdminRouteTripController {
 	}
 	
 	@GetMapping("/trips")
-	public List<Trip> getAllTrips() {
+	public List<TripResponseDto> getAllTrips() {
 		return routeTripService.getAllTrips();
 	}
 	@GetMapping("/trips/{id}")
-	public Trip getTripById(@PathVariable Long id) {
+	public TripResponseDto getTripById(@PathVariable Long id) {
 		return routeTripService.getTripById(id);
 	}
 	
 	@PostMapping("/trips")
-	public Trip addTrip(@RequestBody Trip trip) {
+	public TripResponseDto addTrip(@RequestBody Trip trip) {
 		return routeTripService.addTrip(trip);
 	}
 	
 	@PutMapping("/trips/{id}")
-	public Trip updateTrip(@PathVariable Long id, @RequestBody Trip trip) {
+	public TripResponseDto updateTrip(@PathVariable Long id, @RequestBody Trip trip) {
 		return routeTripService.updateTrip(id, trip);
 	}
 
@@ -81,7 +85,7 @@ public class AdminRouteTripController {
 	}
 	
 	@GetMapping("/routes/search/{fromCity}/{toCity}")
-	public List<Route> getRoutesByCities(
+	public List<RouteResponseDto> getRoutesByCities(
 	        @PathVariable String fromCity,
 	        @PathVariable String toCity) {
 
@@ -91,7 +95,7 @@ public class AdminRouteTripController {
 
 	
 	@GetMapping("/routes/from/{fromCity}")
-	public List<Route> getRoutesByFromCity(
+	public List<RouteResponseDto> getRoutesByFromCity(
 	        @PathVariable String fromCity) {
 
 	    return routeTripService.getRoutesByFromCity(fromCity);
@@ -100,7 +104,7 @@ public class AdminRouteTripController {
 
 	
 	@GetMapping("/trips/route/{routeId}")
-	public List<Trip> getTripsByRouteId(
+	public List<TripResponseDto> getTripsByRouteId(
 	        @PathVariable Long routeId) {
 
 	    return routeTripService.getTripsByRouteId(routeId);
@@ -109,7 +113,7 @@ public class AdminRouteTripController {
 
 	
 	@GetMapping("/trips/bus/{busId}")
-	public List<Trip> getTripsByBusId(@PathVariable Long busId) {
+	public List<TripResponseDto> getTripsByBusId(@PathVariable Long busId) {
 
 	    return routeTripService.getTripsByBusId(busId);
 	}
@@ -117,7 +121,7 @@ public class AdminRouteTripController {
 
 	
 	@GetMapping("/trips/seats/{seats}")
-	public List<Trip> getTripsByAvailableSeats(
+	public List<TripResponseDto> getTripsByAvailableSeats(
 	        @PathVariable Integer seats) {
 
 	    return routeTripService.getTripsByAvailableSeats(seats);
@@ -125,32 +129,32 @@ public class AdminRouteTripController {
 	
 
 	@GetMapping("/routes/to/{toCity}")
-	public List<Route> getRoutesByToCity(@PathVariable String toCity) {
+	public List<RouteResponseDto> getRoutesByToCity(@PathVariable String toCity) {
 	    return routeTripService.getRoutesByToCity(toCity);
 	}
 
 
 	@GetMapping("/routes/duration/{duration}")
-	public List<Route> getRoutesByDuration(@PathVariable Integer duration) {
+	public List<RouteResponseDto> getRoutesByDuration(@PathVariable Integer duration) {
 	    return routeTripService.getRoutesByDuration(duration);
 	}
 
 	@GetMapping("/trips/fare/{fare}")
-	public List<Trip> getTripsByFare(@PathVariable BigDecimal fare) {
+	public List<TripResponseDto> getTripsByFare(@PathVariable BigDecimal fare) {
 	    return routeTripService.getTripsByFare(fare);
 	}
 
 
 	
 	@GetMapping("/trips/date/{date}")
-	public List<Trip> getTripsByDate(@PathVariable LocalDate date) {
+	public List<TripResponseDto> getTripsByDate(@PathVariable LocalDate date) {
 	    return routeTripService.getTripsByDate(date);
 	}
 
 
 	
 	@GetMapping("/trips/departure/{time}")
-	public List<Trip> getTripsByDepartureTime(
+	public List<TripResponseDto> getTripsByDepartureTime(
 	        @PathVariable LocalDateTime time) {
 	    return routeTripService.getTripsByDepartureTime(time);
 	}

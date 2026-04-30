@@ -8,6 +8,12 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.busbooking.dto.BookingMapper;
+import com.busbooking.dto.RouteMapper;
+import com.busbooking.dto.RouteRequestDto;
+import com.busbooking.dto.RouteResponseDto;
+import com.busbooking.dto.TripRequestDto;
+import com.busbooking.dto.TripResponseDto;
 import com.busbooking.entity.Bus;
 import com.busbooking.entity.Driver;
 import com.busbooking.entity.Route;
@@ -22,6 +28,9 @@ import com.busbooking.serviceInterface.IRouteTripService;
 
 @Service
 public class RouteTripService implements IRouteTripService{
+	
+	@Autowired
+	private BookingMapper mapper;
 
 	@Autowired
 	private RouteRepo routeRepo;
@@ -34,63 +43,93 @@ public class RouteTripService implements IRouteTripService{
 
 	@Autowired
 	private DriverRepo driverRepo;
+	
+	@Autowired
+	private RouteMapper routemapper;
 
 	@Autowired
 	private AddressRepo addressRepo;
-	public List<Route> getRoutesByToCity(String toCity) {
-	    return routeRepo.findByToCityIgnoreCase(toCity);
+	
+	
+	public List<RouteResponseDto> getRoutesByToCity(String toCity) {
+	    List<Route> route= routeRepo.findByToCityIgnoreCase(toCity);
+	    
+	    return route.stream().map(routemapper::toDto).toList();
 	}
 
-	public List<Route> getRoutesByDuration(Integer duration) {
-	    return routeRepo.findByDurationGreaterThan(duration);
+	public List<RouteResponseDto> getRoutesByDuration(Integer duration) {
+		List<Route> route=   routeRepo.findByDurationGreaterThan(duration);
+		return route.stream().map(routemapper::toDto).toList();
 	}
 
-	public List<Trip> getTripsByFare(BigDecimal fare) {
-	    return tripRepo.findByFareLessThan(fare);
+	public List<TripResponseDto> getTripsByFare(BigDecimal fare) {
+	   
+		List<Trip> trip=tripRepo.findByFareLessThan(fare);
+		
+		return trip.stream().map(mapper::mapTrip).toList();
+		
 	}
 
-	public List<Trip> getTripsByDate(LocalDate date) {
-	    return tripRepo.findByTripDate(date);
+	public List<TripResponseDto> getTripsByDate(LocalDate date) {
+	    List<Trip> trip= tripRepo.findByTripDate(date);
+	    return trip.stream().map(mapper::mapTrip).toList();
 	}
 
-	public List<Trip> getTripsByDepartureTime(LocalDateTime time) {
-	    return tripRepo.findByDepartureTimeAfter(time);
+	public List<TripResponseDto> getTripsByDepartureTime(LocalDateTime time) {
+		List<Trip> trip= tripRepo.findByDepartureTimeAfter(time);
+		
+		return trip.stream().map(mapper::mapTrip).toList();
 	}
 
-	public List<Route> getRoutesByCities(String fromCity, String toCity) {
-	    return routeRepo.findByFromCityIgnoreCaseAndToCityIgnoreCase(fromCity, toCity);
+	public List<RouteResponseDto> getRoutesByCities(String fromCity, String toCity) {
+	    List<Route> route= routeRepo.findByFromCityIgnoreCaseAndToCityIgnoreCase(fromCity, toCity);
+	    
+	    return route.stream().map(routemapper::toDto).toList();
 	}
 
-	public List<Route> getRoutesByFromCity(String fromCity) {
-	    return routeRepo.findByFromCityIgnoreCase(fromCity);
+	public List<RouteResponseDto> getRoutesByFromCity(String fromCity) {
+	    List<Route> route= routeRepo.findByFromCityIgnoreCase(fromCity);
+	    return route.stream().map(routemapper::toDto).toList();
 	}
 
-	public List<Trip> getTripsByRouteId(Long routeId) {
-	    return tripRepo.findByRoute_RouteId(routeId);
+	public List<TripResponseDto> getTripsByRouteId(Long routeId) {
+		List<Trip> trip= tripRepo.findByRoute_RouteId(routeId);
+		
+		return trip.stream().map(mapper::mapTrip).toList();
+		
 	}
 
-	public List<Trip> getTripsByBusId(Long busId) {
-	    return tripRepo.findByBus_BusId(busId);
+	public List<TripResponseDto> getTripsByBusId(Long busId) {
+		List<Trip> trip= tripRepo.findByBus_BusId(busId);
+		return trip.stream().map(mapper::mapTrip).toList();
 	}
 
-	public List<Trip> getTripsByAvailableSeats(Integer seats) {
-	    return tripRepo.findByAvailableSeatsGreaterThan(seats);
+	public List<TripResponseDto> getTripsByAvailableSeats(Integer seats) {
+		List<Trip> trip= tripRepo.findByAvailableSeatsGreaterThan(seats);
+		return trip.stream().map(mapper::mapTrip).toList();
 	}
 
-	public List<Route> getAllRoutes() {
-		return routeRepo.findAll();
+	public List<RouteResponseDto> getAllRoutes() {
+		List<Route> route= routeRepo.findAll();
+		return route.stream().map(routemapper::toDto).toList();
 	}
 
-	public Route getRouteById(Long id) {
-		return routeRepo.findById(id)
+	public RouteResponseDto getRouteById(Long id) {
+		Route route= routeRepo.findById(id)
 				.orElseThrow(() -> new RuntimeException("Route not found"));
+		return routemapper.toDto(route);
 	}
 
-	public Route addRoute(Route route) {
-		return routeRepo.save(route);
+	public RouteResponseDto addRoute(RouteRequestDto route) {
+		Route rRoute=routemapper.toEntity(route);
+		Route sRoute= routeRepo.save(rRoute);
+		return routemapper.toDto(sRoute);
 	}
 
-	public Route updateRoute(Long id, Route route) {
+	public RouteResponseDto updateRoute(Long id, RouteRequestDto cRoute) {
+		
+		
+		Route route=routemapper.toEntity(cRoute);
 
 		Route existing = routeRepo.findById(id)
 				.orElseThrow(() -> new RuntimeException("Route not found"));
@@ -100,7 +139,9 @@ public class RouteTripService implements IRouteTripService{
 		existing.setBreakPoints(route.getBreakPoints());
 		existing.setDuration(route.getDuration());
 
-		return routeRepo.save(existing);
+		Route sRoute= routeRepo.save(existing);
+		
+		return routemapper.toDto(sRoute);
 	}
 
 	public void deleteRoute(Long id) {
@@ -109,16 +150,20 @@ public class RouteTripService implements IRouteTripService{
 
 
 
-	public List<Trip> getAllTrips() {
-		return tripRepo.findAll();
+	public List<TripResponseDto> getAllTrips() {
+		List<Trip> trip= tripRepo.findAll();
+		return trip.stream().map(mapper::mapTrip).toList();
 	}
 
-	public Trip getTripById(Long id) {
-		return tripRepo.findById(id)
+	public TripResponseDto getTripById(Long id) {
+		Trip trip= tripRepo.findById(id)
 				.orElseThrow(() -> new RuntimeException("Trip not found"));
+		return mapper.mapTrip(trip);
 	}
 
-	public Trip addTrip(Trip trip) {
+	public TripResponseDto addTrip(Trip trip) {
+		
+		
 
 		if (trip.getRoute() != null && trip.getRoute().getRouteId() != null) {
 			Route route = routeRepo.findById(trip.getRoute().getRouteId())
@@ -152,10 +197,13 @@ public class RouteTripService implements IRouteTripService{
 					.orElseThrow(() -> new RuntimeException("Dropping address not found")));
 		}
 
-		return tripRepo.save(trip);
+		Trip sTrip= tripRepo.save(trip);
+		
+		return mapper.mapTrip(sTrip);
+		
 	}
 
-	public Trip updateTrip(Long id, Trip trip) {
+	public TripResponseDto updateTrip(Long id, Trip trip) {
 
 		Trip existing = tripRepo.findById(id)
 				.orElseThrow(() -> new RuntimeException("Trip not found"));
@@ -175,7 +223,9 @@ public class RouteTripService implements IRouteTripService{
 					.orElseThrow(() -> new RuntimeException("Bus not found")));
 		}
 
-		return tripRepo.save(existing);
+		Trip sTrip= tripRepo.save(existing);
+		
+		return mapper.mapTrip(sTrip);
 	}
 
 	public void deleteTrip(Long id) {
