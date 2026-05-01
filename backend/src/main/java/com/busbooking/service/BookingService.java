@@ -21,6 +21,7 @@ import com.busbooking.dto.PassengerDto;
 import com.busbooking.dto.TripResponseDto;
 import com.busbooking.entity.Booking;
 import com.busbooking.entity.BookingStatus;
+import com.busbooking.entity.Customer;
 import com.busbooking.entity.Passenger;
 import com.busbooking.entity.Payment;
 import com.busbooking.entity.PaymentStatus;
@@ -65,7 +66,6 @@ public class BookingService implements IBookingService {
 		List<Trip> trip = tripRepo.searchTrips(fromCity, toCity, date);
 
 		return trip.stream().map(mapper::mapTrip).toList();
-
 	}
 
 	public TripResponseDto getTripById(Long tripId) {
@@ -76,9 +76,7 @@ public class BookingService implements IBookingService {
 	}
 
 	public List<String> getBookedSeats(Long tripId) {
-
 		tripRepo.findById(tripId).orElseThrow(() -> new ResourceNotFoundException("Trip not found"));
-
 		return passengerRepo.findBookedSeatNumbers(tripId);
 	}
 
@@ -88,7 +86,6 @@ public class BookingService implements IBookingService {
 
 	public List<TripResponseDto> searchTripsWithPrice(String fromCity, String toCity, LocalDate date, BigDecimal min,
 			BigDecimal max) {
-
 		return tripRepo.searchTripsWithPriceFilter(fromCity, toCity, date, min, max).stream().map(mapper::mapTrip)
 				.toList();
 	}
@@ -108,6 +105,8 @@ public class BookingService implements IBookingService {
 		User user = userRepo.findByUsername(username)
 				.orElseThrow(() -> new ResourceNotFoundException("User not found"));
 
+		Customer customer = getCustomerSafely(user);
+
 		Trip trip = tripRepo.findById(dto.getTripId())
 				.orElseThrow(() -> new ResourceNotFoundException("Trip not found"));
 
@@ -122,7 +121,7 @@ public class BookingService implements IBookingService {
 
 		Booking booking = new Booking();
 		booking.setTrip(trip);
-		booking.setCustomer(user.getCustomer());
+		booking.setCustomer(customer);
 		booking.setStatus(BookingStatus.BOOKED);
 		booking.setBookingDate(LocalDateTime.now());
 
@@ -157,7 +156,7 @@ public class BookingService implements IBookingService {
 
 		Payment payment = new Payment();
 		payment.setBooking(savedBooking);
-		payment.setCustomer(user.getCustomer());
+		payment.setCustomer(customer);
 		payment.setAmount(trip.getFare().multiply(BigDecimal.valueOf(passengers.size())));
 		payment.setPaymentDate(LocalDateTime.now());
 		payment.setPaymentStatus(PaymentStatus.SUCCESS);
@@ -188,8 +187,9 @@ public class BookingService implements IBookingService {
 		Booking booking = bookingRepo.findById(bookingId)
 				.orElseThrow(() -> new ResourceNotFoundException("Booking not found with id " + bookingId));
 
-		if (user.getCustomer() == null
-				|| !booking.getCustomer().getCustomerId().equals(user.getCustomer().getCustomerId())) {
+		Customer currentCustomer = getCustomerSafely(user);
+
+		if (!booking.getCustomer().getCustomerId().equals(currentCustomer.getCustomerId())) {
 			throw new BadRequestException("You can only cancel your own bookings");
 		}
 
@@ -228,17 +228,25 @@ public class BookingService implements IBookingService {
 
 	// Helpers
 
+	private Customer getCustomerSafely(User user) {
+		Customer customer = user.getCustomer();
+		if (customer == null) {
+			customer = new Customer();
+			customer.setName(user.getFullName() != null ? user.getFullName() : user.getUsername());
+			customer.setEmail(user.getEmail());
+			customer.setPhone(user.getPhone());
+			user.setCustomer(customer);
+			user = userRepo.save(user);
+			return user.getCustomer();
+		}
+		return customer;
+	}
+
 	public Long getCustomerId() {
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		String username = auth.getName();
-
 		User user = userRepo.findByUsername(username)
 				.orElseThrow(() -> new ResourceNotFoundException("User not found"));
-
-		if (user.getCustomer() == null) {
-			throw new BadRequestException("User does not have a customer profile");
-		}
-
-		return user.getCustomer().getCustomerId();
+		return getCustomerSafely(user).getCustomerId();
 	}
 }
