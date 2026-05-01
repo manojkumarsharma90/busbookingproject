@@ -7,6 +7,7 @@ import org.springframework.stereotype.Component;
 import com.busbooking.entity.Booking;
 import com.busbooking.entity.Passenger;
 import com.busbooking.entity.Review;
+import com.busbooking.entity.Route;
 import com.busbooking.entity.Trip;
 
 @Component
@@ -91,4 +92,20 @@ public class BookingMapper {
 
 	    return dto;
 	}
+	
+	
+	
+	 public  RouteResponseDto toRouteDto(Route route) {
+	        if (route == null) {
+	            return null;
+	        }
+
+	        return new RouteResponseDto(
+	                route.getRouteId(),
+	                route.getFromCity(),
+	                route.getToCity(),
+	                route.getBreakPoints(),
+	                route.getDuration()
+	        );
+	    }
 }

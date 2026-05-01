@@ -5,35 +5,37 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import com.busbooking.dto.RouteResponseDto;
+import com.busbooking.dto.TripResponseDto;
 import com.busbooking.entity.Route;
 import com.busbooking.entity.Trip;
 
 public interface IRouteTripService {
 
     // ROUTE APIs
-    List<Route> getAllRoutes();
-    Route getRouteById(Long id);
-    Route addRoute(Route route);
-    Route updateRoute(Long id, Route route);
+    List<RouteResponseDto> getAllRoutes();
+    RouteResponseDto getRouteById(Long id);
+    RouteResponseDto addRoute(Route route);
+    RouteResponseDto updateRoute(Long id, Route route);
     void deleteRoute(Long id);
 
     // TRIP APIs
-    List<Trip> getAllTrips();
-    Trip getTripById(Long id);
-    Trip addTrip(Trip trip);
-    Trip updateTrip(Long id, Trip trip);
+    List<TripResponseDto> getAllTrips();
+    TripResponseDto getTripById(Long id);
+    TripResponseDto addTrip(Trip trip);
+    TripResponseDto updateTrip(Long id, Trip trip);
     void deleteTrip(Long id);
 
     // CUSTOM APIs
-    List<Route> getRoutesByCities(String fromCity, String toCity);
-    List<Route> getRoutesByFromCity(String fromCity);
-    List<Route> getRoutesByToCity(String toCity);
-    List<Route> getRoutesByDuration(Integer duration);
+    List<RouteResponseDto> getRoutesByCities(String fromCity, String toCity);
+    List<RouteResponseDto> getRoutesByFromCity(String fromCity);
+    List<RouteResponseDto> getRoutesByToCity(String toCity);
+    List<RouteResponseDto> getRoutesByDuration(Integer duration);
 
-    List<Trip> getTripsByRouteId(Long routeId);
-    List<Trip> getTripsByBusId(Long busId);
-    List<Trip> getTripsByAvailableSeats(Integer seats);
-    List<Trip> getTripsByFare(BigDecimal fare);
-    List<Trip> getTripsByDate(LocalDate date);
-    List<Trip> getTripsByDepartureTime(LocalDateTime time);
+    List<TripResponseDto> getTripsByRouteId(Long routeId);
+    List<TripResponseDto> getTripsByBusId(Long busId);
+    List<TripResponseDto> getTripsByAvailableSeats(Integer seats);
+    List<TripResponseDto> getTripsByFare(BigDecimal fare);
+    List<TripResponseDto> getTripsByDate(LocalDate date);
+    List<TripResponseDto> getTripsByDepartureTime(LocalDateTime time);
 }

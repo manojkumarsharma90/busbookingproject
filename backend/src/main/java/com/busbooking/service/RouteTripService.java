@@ -8,10 +8,14 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.busbooking.dto.BookingMapper;
+import com.busbooking.dto.RouteResponseDto;
+import com.busbooking.dto.TripResponseDto;
 import com.busbooking.entity.Bus;
 import com.busbooking.entity.Driver;
 import com.busbooking.entity.Route;
 import com.busbooking.entity.Trip;
+import com.busbooking.exception.NotAvailableException;
 import com.busbooking.repository.AddressRepo;
 import com.busbooking.repository.BusRepo;
 import com.busbooking.repository.DriverRepo;
@@ -19,9 +23,8 @@ import com.busbooking.repository.RouteRepo;
 import com.busbooking.repository.TripRepo;
 import com.busbooking.serviceInterface.IRouteTripService;
 
-
 @Service
-public class RouteTripService implements IRouteTripService{
+public class RouteTripService implements IRouteTripService {
 
 	@Autowired
 	private RouteRepo routeRepo;
@@ -37,128 +40,145 @@ public class RouteTripService implements IRouteTripService{
 
 	@Autowired
 	private AddressRepo addressRepo;
-	public List<Route> getRoutesByToCity(String toCity) {
-	    return routeRepo.findByToCityIgnoreCase(toCity);
+	
+	@Autowired
+	private BookingMapper mapper;
+
+	public List<RouteResponseDto> getRoutesByToCity(String toCity) {
+		List<Route> route=routeRepo.findByToCityIgnoreCase(toCity);
+		return route.stream().map(mapper::toRouteDto).toList();
 	}
 
-	public List<Route> getRoutesByDuration(Integer duration) {
-	    return routeRepo.findByDurationGreaterThan(duration);
+	public List<RouteResponseDto> getRoutesByDuration(Integer duration) {
+		List<Route> route= routeRepo.findByDurationGreaterThan(duration);
+		return route.stream().map(mapper::toRouteDto).toList();
 	}
 
-	public List<Trip> getTripsByFare(BigDecimal fare) {
-	    return tripRepo.findByFareLessThan(fare);
+	public List<RouteResponseDto> getRoutesByCities(String fromCity, String toCity) {
+		List<Route> route= routeRepo.findByFromCityIgnoreCaseAndToCityIgnoreCase(fromCity, toCity);
+		return route.stream().map(mapper::toRouteDto).toList();
+	}
+	
+
+	public List<RouteResponseDto> getRoutesByFromCity(String fromCity) {
+		List<Route> route= routeRepo.findByFromCityIgnoreCase(fromCity);
+		return route.stream().map(mapper::toRouteDto).toList();
+		
 	}
 
-	public List<Trip> getTripsByDate(LocalDate date) {
-	    return tripRepo.findByTripDate(date);
+	public List<RouteResponseDto> getAllRoutes() {
+		List<Route> route= routeRepo.findAll();
+		return route.stream().map(mapper::toRouteDto).toList();
 	}
 
-	public List<Trip> getTripsByDepartureTime(LocalDateTime time) {
-	    return tripRepo.findByDepartureTimeAfter(time);
+	public RouteResponseDto getRouteById(Long id) {
+		Route route= routeRepo.findById(id).orElseThrow(() -> new NotAvailableException("Route not found"));
+		return mapper.toRouteDto(route);
 	}
 
-	public List<Route> getRoutesByCities(String fromCity, String toCity) {
-	    return routeRepo.findByFromCityIgnoreCaseAndToCityIgnoreCase(fromCity, toCity);
+	public RouteResponseDto addRoute(Route route) {
+		Route sRoute= routeRepo.save(route);
+		return mapper.toRouteDto(route);
 	}
 
-	public List<Route> getRoutesByFromCity(String fromCity) {
-	    return routeRepo.findByFromCityIgnoreCase(fromCity);
-	}
+	public RouteResponseDto updateRoute(Long id, Route route) {
 
-	public List<Trip> getTripsByRouteId(Long routeId) {
-	    return tripRepo.findByRoute_RouteId(routeId);
-	}
-
-	public List<Trip> getTripsByBusId(Long busId) {
-	    return tripRepo.findByBus_BusId(busId);
-	}
-
-	public List<Trip> getTripsByAvailableSeats(Integer seats) {
-	    return tripRepo.findByAvailableSeatsGreaterThan(seats);
-	}
-
-	public List<Route> getAllRoutes() {
-		return routeRepo.findAll();
-	}
-
-	public Route getRouteById(Long id) {
-		return routeRepo.findById(id)
-				.orElseThrow(() -> new RuntimeException("Route not found"));
-	}
-
-	public Route addRoute(Route route) {
-		return routeRepo.save(route);
-	}
-
-	public Route updateRoute(Long id, Route route) {
-
-		Route existing = routeRepo.findById(id)
-				.orElseThrow(() -> new RuntimeException("Route not found"));
+		Route existing = routeRepo.findById(id).orElseThrow(() -> new NotAvailableException("Route not found"));
 
 		existing.setFromCity(route.getFromCity());
 		existing.setToCity(route.getToCity());
 		existing.setBreakPoints(route.getBreakPoints());
 		existing.setDuration(route.getDuration());
 
-		return routeRepo.save(existing);
+	  Route sRoute= routeRepo.save(existing);
+	  return mapper.toRouteDto(route);
 	}
 
 	public void deleteRoute(Long id) {
 		routeRepo.deleteById(id);
 	}
 
-
-
-	public List<Trip> getAllTrips() {
-		return tripRepo.findAll();
+	public List<TripResponseDto> getTripsByFare(BigDecimal fare) {
+		List<Trip> trip= tripRepo.findByFareLessThan(fare);
+		return trip.stream().map(mapper::mapTrip).toList();
 	}
 
-	public Trip getTripById(Long id) {
-		return tripRepo.findById(id)
-				.orElseThrow(() -> new RuntimeException("Trip not found"));
+	public List<TripResponseDto> getTripsByDate(LocalDate date) {
+		List<Trip> trip=tripRepo.findByTripDate(date);
+		return trip.stream().map(mapper::mapTrip).toList();
 	}
 
-	public Trip addTrip(Trip trip) {
+	public List<TripResponseDto> getTripsByDepartureTime(LocalDateTime time) {
+		List<Trip> trip= tripRepo.findByDepartureTimeAfter(time);
+		return trip.stream().map(mapper::mapTrip).toList();
+	}
+
+	public List<TripResponseDto> getTripsByRouteId(Long routeId) {
+		List<Trip> trip= tripRepo.findByRoute_RouteId(routeId);
+		return trip.stream().map(mapper::mapTrip).toList();
+	}
+
+	public List<TripResponseDto> getTripsByBusId(Long busId) {
+		List<Trip> trip= tripRepo.findByBus_BusId(busId);
+		return trip.stream().map(mapper::mapTrip).toList();
+	}
+
+	public List<TripResponseDto> getTripsByAvailableSeats(Integer seats) {
+		List<Trip> trip= tripRepo.findByAvailableSeatsGreaterThan(seats);
+		return trip.stream().map(mapper::mapTrip).toList();
+	}
+
+	public List<TripResponseDto> getAllTrips() {
+		List<Trip> trip= tripRepo.findAll();
+		return trip.stream().map(mapper::mapTrip).toList();
+	}
+
+	public TripResponseDto getTripById(Long id) {
+		Trip trip= tripRepo.findById(id).orElseThrow(() -> new NotAvailableException("Trip not found"));
+		return mapper.mapTrip(trip);
+	}
+
+	public TripResponseDto addTrip(Trip trip) {
 
 		if (trip.getRoute() != null && trip.getRoute().getRouteId() != null) {
 			Route route = routeRepo.findById(trip.getRoute().getRouteId())
-					.orElseThrow(() -> new RuntimeException("Route not found"));
+					.orElseThrow(() -> new NotAvailableException("Route not found"));
 			trip.setRoute(route);
 		}
 
 		if (trip.getBus() != null && trip.getBus().getBusId() != null) {
 			Bus bus = busRepo.findById(trip.getBus().getBusId())
-					.orElseThrow(() -> new RuntimeException("Bus not found"));
+					.orElseThrow(() -> new NotAvailableException("Bus not found"));
 			trip.setBus(bus);
 		}
 
 		if (trip.getDriver1() != null && trip.getDriver1().getDriverId() != null) {
 			Driver d1 = driverRepo.findById(trip.getDriver1().getDriverId())
-					.orElseThrow(() -> new RuntimeException("Driver 1 not found"));
+					.orElseThrow(() -> new NotAvailableException("Driver 1 not found"));
 			trip.setDriver1(d1);
 		}
 		if (trip.getDriver2() != null && trip.getDriver2().getDriverId() != null) {
 			Driver d2 = driverRepo.findById(trip.getDriver2().getDriverId())
-					.orElseThrow(() -> new RuntimeException("Driver 2 not found"));
+					.orElseThrow(() -> new NotAvailableException("Driver 2 not found"));
 			trip.setDriver2(d2);
 		}
 
 		if (trip.getBoardingAddress() != null && trip.getBoardingAddress().getAddressId() != null) {
 			trip.setBoardingAddress(addressRepo.findById(trip.getBoardingAddress().getAddressId())
-					.orElseThrow(() -> new RuntimeException("Boarding address not found")));
+					.orElseThrow(() -> new NotAvailableException("Boarding address not found")));
 		}
 		if (trip.getDroppingAddress() != null && trip.getDroppingAddress().getAddressId() != null) {
 			trip.setDroppingAddress(addressRepo.findById(trip.getDroppingAddress().getAddressId())
-					.orElseThrow(() -> new RuntimeException("Dropping address not found")));
+					.orElseThrow(() -> new NotAvailableException("Dropping address not found")));
 		}
 
-		return tripRepo.save(trip);
+		Trip sTrip= tripRepo.save(trip);
+		return mapper.mapTrip(sTrip);
 	}
 
-	public Trip updateTrip(Long id, Trip trip) {
+	public TripResponseDto updateTrip(Long id, Trip trip) {
 
-		Trip existing = tripRepo.findById(id)
-				.orElseThrow(() -> new RuntimeException("Trip not found"));
+		Trip existing = tripRepo.findById(id).orElseThrow(() -> new NotAvailableException("Trip not found"));
 
 		existing.setDepartureTime(trip.getDepartureTime());
 		existing.setArrivalTime(trip.getArrivalTime());
@@ -168,15 +188,15 @@ public class RouteTripService implements IRouteTripService{
 
 		if (trip.getRoute() != null && trip.getRoute().getRouteId() != null) {
 			existing.setRoute(routeRepo.findById(trip.getRoute().getRouteId())
-					.orElseThrow(() -> new RuntimeException("Route not found")));
+					.orElseThrow(() -> new NotAvailableException("Route not found")));
 		}
 		if (trip.getBus() != null && trip.getBus().getBusId() != null) {
 			existing.setBus(busRepo.findById(trip.getBus().getBusId())
-					.orElseThrow(() -> new RuntimeException("Bus not found")));
+					.orElseThrow(() -> new NotAvailableException("Bus not found")));
 		}
 
-		return tripRepo.save(existing);
-	}
+		Trip sTrip= tripRepo.save(existing);
+		return mapper.mapTrip(sTrip);	}
 
 	public void deleteTrip(Long id) {
 		tripRepo.deleteById(id);
