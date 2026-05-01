@@ -29,7 +29,6 @@ public class RouteTripServiceTest {
     @Autowired
     private RouteTripService service;
 
-    // ================= ROUTES =================
 
     @Test
     public void testGetAllRoutes_Success() {
@@ -50,7 +49,6 @@ public class RouteTripServiceTest {
         assertEquals(0, result.size());
     }
 
-    // ================= ROUTE BY ID =================
 
     @Test
     public void testGetRouteById_Success() {
@@ -72,8 +70,6 @@ public class RouteTripServiceTest {
             service.getRouteById(1L);
         });
     }
-
-    // ================= TRIPS =================
 
     @Test
     public void testGetTripsByFare_Success() {
@@ -121,6 +117,204 @@ public class RouteTripServiceTest {
 
         List<TripResponseDto> result =
                 service.getTripsByDate(LocalDate.now());
+
+        assertEquals(0, result.size());
+    }
+
+
+    @Test
+    public void testGetRoutesByFromCity_Success() {
+        when(routeRepo.findByFromCityIgnoreCase(any()))
+                .thenReturn(List.of(new Route()));
+
+        when(mapper.toRouteDto(any()))
+                .thenReturn(new RouteResponseDto());
+
+        List<RouteResponseDto> result = service.getRoutesByFromCity("Delhi");
+
+        assertEquals(1, result.size());
+    }
+
+    @Test
+    public void testGetRoutesByFromCity_Empty() {
+        when(routeRepo.findByFromCityIgnoreCase(any()))
+                .thenReturn(List.of());
+
+        List<RouteResponseDto> result = service.getRoutesByFromCity("Delhi");
+
+        assertEquals(0, result.size());
+    }
+
+
+    @Test
+    public void testGetRoutesByToCity_Success() {
+        when(routeRepo.findByToCityIgnoreCase(any()))
+                .thenReturn(List.of(new Route()));
+
+        when(mapper.toRouteDto(any()))
+                .thenReturn(new RouteResponseDto());
+
+        List<RouteResponseDto> result = service.getRoutesByToCity("Mumbai");
+
+        assertEquals(1, result.size());
+    }
+
+    @Test
+    public void testGetRoutesByToCity_Empty() {
+        when(routeRepo.findByToCityIgnoreCase(any()))
+                .thenReturn(List.of());
+
+        List<RouteResponseDto> result = service.getRoutesByToCity("Mumbai");
+
+        assertEquals(0, result.size());
+    }
+
+
+
+    @Test
+    public void testGetRoutesByCities_Success() {
+        when(routeRepo.findByFromCityIgnoreCaseAndToCityIgnoreCase(any(), any()))
+                .thenReturn(List.of(new Route()));
+
+        when(mapper.toRouteDto(any()))
+                .thenReturn(new RouteResponseDto());
+
+        List<RouteResponseDto> result =
+                service.getRoutesByCities("Delhi", "Mumbai");
+
+        assertEquals(1, result.size());
+    }
+
+    @Test
+    public void testGetRoutesByCities_Empty() {
+        when(routeRepo.findByFromCityIgnoreCaseAndToCityIgnoreCase(any(), any()))
+                .thenReturn(List.of());
+
+        List<RouteResponseDto> result =
+                service.getRoutesByCities("Delhi", "Mumbai");
+
+        assertEquals(0, result.size());
+    }
+
+
+
+    @Test
+    public void testGetRoutesByDuration_Success() {
+        when(routeRepo.findByDurationGreaterThan(any()))
+                .thenReturn(List.of(new Route()));
+
+        when(mapper.toRouteDto(any()))
+                .thenReturn(new RouteResponseDto());
+
+        List<RouteResponseDto> result = service.getRoutesByDuration(5);
+
+        assertEquals(1, result.size());
+    }
+
+    @Test
+    public void testGetRoutesByDuration_Empty() {
+        when(routeRepo.findByDurationGreaterThan(any()))
+                .thenReturn(List.of());
+
+        List<RouteResponseDto> result = service.getRoutesByDuration(5);
+
+        assertEquals(0, result.size());
+    }
+
+
+    @Test
+    public void testGetTripsByDepartureTime_Success() {
+        when(tripRepo.findByDepartureTimeAfter(any()))
+                .thenReturn(List.of(new Trip()));
+
+        when(mapper.mapTrip(any()))
+                .thenReturn(new TripResponseDto());
+
+        List<TripResponseDto> result =
+                service.getTripsByDepartureTime(java.time.LocalDateTime.now());
+
+        assertEquals(1, result.size());
+    }
+
+    @Test
+    public void testGetTripsByDepartureTime_Empty() {
+        when(tripRepo.findByDepartureTimeAfter(any()))
+                .thenReturn(List.of());
+
+        List<TripResponseDto> result =
+                service.getTripsByDepartureTime(java.time.LocalDateTime.now());
+
+        assertEquals(0, result.size());
+    }
+
+
+    @Test
+    public void testGetTripsByRouteId_Success() {
+        when(tripRepo.findByRoute_RouteId(any()))
+                .thenReturn(List.of(new Trip()));
+
+        when(mapper.mapTrip(any()))
+                .thenReturn(new TripResponseDto());
+
+        List<TripResponseDto> result = service.getTripsByRouteId(1L);
+
+        assertEquals(1, result.size());
+    }
+
+    @Test
+    public void testGetTripsByRouteId_Empty() {
+        when(tripRepo.findByRoute_RouteId(any()))
+                .thenReturn(List.of());
+
+        List<TripResponseDto> result = service.getTripsByRouteId(1L);
+
+        assertEquals(0, result.size());
+    }
+
+
+    @Test
+    public void testGetTripsByBusId_Success() {
+        when(tripRepo.findByBus_BusId(any()))
+                .thenReturn(List.of(new Trip()));
+
+        when(mapper.mapTrip(any()))
+                .thenReturn(new TripResponseDto());
+
+        List<TripResponseDto> result = service.getTripsByBusId(1L);
+
+        assertEquals(1, result.size());
+    }
+
+    @Test
+    public void testGetTripsByBusId_Empty() {
+        when(tripRepo.findByBus_BusId(any()))
+                .thenReturn(List.of());
+
+        List<TripResponseDto> result = service.getTripsByBusId(1L);
+
+        assertEquals(0, result.size());
+    }
+
+
+    @Test
+    public void testGetTripsByAvailableSeats_Success() {
+        when(tripRepo.findByAvailableSeatsGreaterThan(any()))
+                .thenReturn(List.of(new Trip()));
+
+        when(mapper.mapTrip(any()))
+                .thenReturn(new TripResponseDto());
+
+        List<TripResponseDto> result = service.getTripsByAvailableSeats(10);
+
+        assertEquals(1, result.size());
+    }
+
+    @Test
+    public void testGetTripsByAvailableSeats_Empty() {
+        when(tripRepo.findByAvailableSeatsGreaterThan(any()))
+                .thenReturn(List.of());
+
+        List<TripResponseDto> result = service.getTripsByAvailableSeats(10);
 
         assertEquals(0, result.size());
     }
