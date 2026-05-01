@@ -42,9 +42,9 @@ public class BusBookingController {
 	private ReviewService reviewService;
 
 
-	// ============================
+	
 	// SEARCH APIs
-	// ============================
+
 
 	@GetMapping("/schedules")
 	public List<TripResponseDto> getSchedules(
@@ -85,9 +85,9 @@ public class BusBookingController {
 	}
 
 
-	// ============================
+	
 	// BOOKING APIs
-	// ============================
+	
 
 	@PostMapping("/addbusbooking")
 	public ResponseEntity<BookingResponseDto> bookBus(@RequestBody BookingDto dto) {
@@ -115,9 +115,9 @@ public class BusBookingController {
 	}
 
 
-	// ============================
+
 	// REVIEW APIs
-	// ============================
+	
 
 	@PostMapping("/reviews")
 	public ResponseEntity<ReviewResponseDto> addReview(@Valid @RequestBody ReviewRequestDto dto) {
