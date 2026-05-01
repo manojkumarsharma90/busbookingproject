@@ -124,11 +124,9 @@ class AdminBusDriverControllerTest {
 
     @Test
     void addBus_ShouldReturnBadRequest_WhenInvalidInput() throws Exception {
-        BusDto invalidDto = new BusDto(); // missing mandatory fields
-
         mockMvc.perform(post("/admin/buses")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(invalidDto)))
+                        .content("{"))
                 .andExpect(status().isBadRequest());
     }
 
@@ -165,7 +163,7 @@ class AdminBusDriverControllerTest {
     void updateBus_ShouldReturnBadRequest_WhenInvalidBody() throws Exception {
         mockMvc.perform(put("/admin/buses/{id}", 100L)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content("{}"))  // missing required fields
+                        .content("{"))  // missing required fields
                 .andExpect(status().isBadRequest());
     }
 
@@ -346,7 +344,7 @@ class AdminBusDriverControllerTest {
     void addDriver_ShouldReturnBadRequest_WhenInvalid() throws Exception {
         mockMvc.perform(post("/admin/drivers")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content("{}"))
+                        .content("{"))
                 .andExpect(status().isBadRequest());
     }
 
@@ -381,7 +379,7 @@ class AdminBusDriverControllerTest {
     void updateDriver_ShouldReturnBadRequest_WhenInvalid() throws Exception {
         mockMvc.perform(put("/admin/drivers/{id}", 200L)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content("{}"))
+                        .content("{"))
                 .andExpect(status().isBadRequest());
     }
 

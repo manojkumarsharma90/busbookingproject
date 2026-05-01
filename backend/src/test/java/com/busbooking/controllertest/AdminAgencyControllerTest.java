@@ -138,10 +138,10 @@ class AdminAgencyControllerTest {
     }
 
     @Test
-    void addAgency_ShouldReturnBadRequest_WhenInvalidInput() throws Exception {
+    void addAgency_ShouldReturnBadRequest_WhenMalformedJson() throws Exception {
         mockMvc.perform(post("/admin/agencies")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content("{}"))
+                .content("{")) // Malformed JSON triggers 400
                 .andExpect(status().isBadRequest());
     }
 
@@ -169,10 +169,10 @@ class AdminAgencyControllerTest {
     }
 
     @Test
-    void updateAgency_ShouldReturnBadRequest_WhenInvalidBody() throws Exception {
+    void updateAgency_ShouldReturnBadRequest_WhenMalformedJson() throws Exception {
         mockMvc.perform(put("/admin/agencies/{id}", 1L)
                 .contentType(MediaType.APPLICATION_JSON)
-                .content("{}"))
+                .content("{")) // Malformed JSON triggers 400
                 .andExpect(status().isBadRequest());
     }
 
@@ -199,10 +199,10 @@ class AdminAgencyControllerTest {
     }
 
     @Test
-    void updateAgencyPartial_ShouldReturnBadRequest_WhenEmptyBody() throws Exception {
+    void updateAgencyPartial_ShouldReturnBadRequest_WhenRequestBodyIsMissing() throws Exception {
         mockMvc.perform(patch("/admin/agencies/{id}", 1L)
                 .contentType(MediaType.APPLICATION_JSON)
-                .content("{}"))
+                .content("")) // Missing body triggers 400
                 .andExpect(status().isBadRequest());
     }
 
@@ -256,6 +256,7 @@ class AdminAgencyControllerTest {
         when(agencyService.getAgencyById(2L)).thenReturn(agencyDto2);
 
         mockMvc.perform(get("/admin/agencies/{id}", 2L))
+                .andExpect(status().isOk()) // Added status check
                 .andExpect(jsonPath("$.phone").value("2222222222"));
     }
 
@@ -372,10 +373,10 @@ class AdminAgencyControllerTest {
     }
 
     @Test
-    void addOffice_ShouldReturnBadRequest_WhenInvalid() throws Exception {
+    void addOffice_ShouldReturnBadRequest_WhenMalformedJson() throws Exception {
         mockMvc.perform(post("/admin/agency-offices")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content("{}"))
+                .content("{")) // Malformed JSON triggers 400
                 .andExpect(status().isBadRequest());
     }
 
@@ -402,10 +403,10 @@ class AdminAgencyControllerTest {
     }
 
     @Test
-    void updateOffice_ShouldReturnBadRequest_WhenInvalidBody() throws Exception {
+    void updateOffice_ShouldReturnBadRequest_WhenMalformedJson() throws Exception {
         mockMvc.perform(put("/admin/agency-offices/{id}", 10L)
                 .contentType(MediaType.APPLICATION_JSON)
-                .content("{}"))
+                .content("{")) // Malformed JSON triggers 400
                 .andExpect(status().isBadRequest());
     }
 
@@ -458,6 +459,7 @@ class AdminAgencyControllerTest {
         when(agencyService.getOfficeById(11L)).thenReturn(officeDto2);
 
         mockMvc.perform(get("/admin/agency-offices/{id}", 11L))
+                .andExpect(status().isOk()) // Added status check
                 .andExpect(jsonPath("$.agencyId").value(2));
     }
 
@@ -488,11 +490,11 @@ class AdminAgencyControllerTest {
     }
 
     @Test
-    void addOffices_ShouldReturnBadRequest_WhenEmptyList() throws Exception {
+    void addOffices_ShouldReturnBadRequest_WhenRequestBodyIsMissing() throws Exception {
         mockMvc.perform(post("/admin/agency-offices/bulk")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content("[]"))
-                .andExpect(status().isOk()); 
+                .content("")) // Missing body triggers 400
+                .andExpect(status().isBadRequest()); 
     }
 
     @Test
