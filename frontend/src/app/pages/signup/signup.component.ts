@@ -144,3 +144,4 @@ export class SignupComponent {
     });
   }
 }
+// This component provides a user registration form with validation and error handling. It uses AuthService to communicate with the backend and ToastService for user feedback.
