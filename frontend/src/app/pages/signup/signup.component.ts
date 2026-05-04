@@ -1,101 +1,16 @@
-import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
+import { AuthService } from '../../auth.service';
+import { Router } from '@angular/router';
+import { ToastService } from '../../toast.service';
 import { FormsModule } from '@angular/forms';
-import { Router, RouterLink } from '@angular/router';
-import { AuthService } from '../../services/auth.service';
-import { ToastService } from '../../services/toast.service';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-signup',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterLink],
-  template: `
-    <div class="auth-page">
-      <div class="auth-card fade-in">
-        <div class="auth-header">
-          <span class="auth-icon">🚌</span>
-          <h1>Create an account</h1>
-          <p>Start booking bus tickets with BusGo</p>
-        </div>
-
-        <form (ngSubmit)="onSignup()" class="auth-form">
-          <div class="row g-3">
-            <div class="col-12">
-              <label class="form-label">Full Name *</label>
-              <input type="text" class="form-input" [(ngModel)]="form.name" name="name" placeholder="John Doe" required>
-            </div>
-            <div class="col-md-6">
-              <label class="form-label">Username *</label>
-              <input type="text" class="form-input" [(ngModel)]="form.userName" name="userName" placeholder="johndoe" required>
-            </div>
-            <div class="col-md-6">
-              <label class="form-label">Phone *</label>
-              <input type="tel" class="form-input" [(ngModel)]="form.phoneNo" name="phoneNo" placeholder="9876543210" required>
-            </div>
-            <div class="col-12">
-              <label class="form-label">Email *</label>
-              <input type="email" class="form-input" [(ngModel)]="form.email" name="email" placeholder="john&#64;example.com" required>
-            </div>
-            <div class="col-12">
-              <label class="form-label">Password *</label>
-              <input type="password" class="form-input" [(ngModel)]="form.password" name="password" placeholder="Min 6 characters" required>
-            </div>
-            <div class="col-md-6">
-              <label class="form-label">City</label>
-              <input type="text" class="form-input" [(ngModel)]="form.city" name="city" placeholder="Mumbai">
-            </div>
-            <div class="col-md-6">
-              <label class="form-label">State</label>
-              <input type="text" class="form-input" [(ngModel)]="form.state" name="state" placeholder="Maharashtra">
-            </div>
-          </div>
-
-          <div *ngIf="error" class="error-msg">{{ error }}</div>
-
-          <button type="submit" class="btn-primary-custom w-100" [disabled]="loading">
-            <span *ngIf="loading" class="spinner"></span>
-            {{ loading ? 'Creating account...' : 'Create Account' }}
-          </button>
-        </form>
-
-        <p class="auth-footer">
-          Already have an account? <a routerLink="/login">Sign in</a>
-        </p>
-      </div>
-    </div>
-  `,
-  styles: [`
-    .auth-page {
-      min-height: calc(100vh - 70px);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 40px 20px;
-      background: var(--gray-50);
-    }
-    .auth-card {
-      background: var(--white);
-      border-radius: var(--radius-lg);
-      box-shadow: var(--shadow-lg);
-      padding: 40px;
-      width: 100%;
-      max-width: 520px;
-      border: 1px solid var(--gray-200);
-    }
-    .auth-header { text-align: center; margin-bottom: 28px; }
-    .auth-icon { font-size: 2.5rem; display: block; margin-bottom: 12px; }
-    .auth-header h1 { font-size: 1.5rem; font-weight: 700; color: var(--dark); margin-bottom: 4px; }
-    .auth-header p { font-size: 0.875rem; color: var(--gray-500); }
-    .auth-form { display: flex; flex-direction: column; gap: 20px; }
-    .w-100 { width: 100%; justify-content: center; padding: 12px !important; }
-    .error-msg {
-      background: #FEE2E2; color: #991B1B;
-      padding: 10px 14px; border-radius: var(--radius-sm);
-      font-size: 0.813rem; font-weight: 500;
-    }
-    .auth-footer { text-align: center; margin-top: 24px; font-size: 0.875rem; color: var(--gray-500); }
-    .auth-footer a { color: var(--primary); font-weight: 600; }
-  `]
+  imports: [FormsModule,CommonModule],
+  templateUrl: './signup.component.html',
+  styleUrl: './signup.component.css'
 })
 export class SignupComponent {
   form = { name: '', userName: '', email: '', phoneNo: '', password: '', city: '', state: '' };
@@ -143,5 +58,5 @@ export class SignupComponent {
       }
     });
   }
+
 }
-// This component provides a user registration form with validation and error handling. It uses AuthService to communicate with the backend and ToastService for user feedback.

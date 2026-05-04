@@ -1,0 +1,53 @@
+ <div class="auth-page">
+      <div class="auth-card fade-in">
+        <div class="auth-header">
+          <span class="auth-icon">🚌</span>
+          <h1>Create an account</h1>
+          <p>Start booking bus tickets with BusGo</p>
+        </div>
+
+        <form (ngSubmit)="onSignup()" class="auth-form">
+          <div class="row g-3">
+            <div class="col-12">
+              <label class="form-label">Full Name *</label>
+              <input type="text" class="form-input" [(ngModel)]="form.name" name="name" placeholder="John Doe" required>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">Username *</label>
+              <input type="text" class="form-input" [(ngModel)]="form.userName" name="userName" placeholder="johndoe" required>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">Phone *</label>
+              <input type="tel" class="form-input" [(ngModel)]="form.phoneNo" name="phoneNo" placeholder="9876543210" required>
+            </div>
+            <div class="col-12">
+              <label class="form-label">Email *</label>
+              <input type="email" class="form-input" [(ngModel)]="form.email" name="email" placeholder="john&#64;example.com" required>
+            </div>
+            <div class="col-12">
+              <label class="form-label">Password *</label>
+              <input type="password" class="form-input" [(ngModel)]="form.password" name="password" placeholder="Min 6 characters" required>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">City</label>
+              <input type="text" class="form-input" [(ngModel)]="form.city" name="city" placeholder="Mumbai">
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">State</label>
+              <input type="text" class="form-input" [(ngModel)]="form.state" name="state" placeholder="Maharashtra">
+            </div>
+          </div>
+
+          <div *ngIf="error" class="error-msg">{{ error }}</div>
+
+          <button type="submit" class="btn-primary-custom w-100" [disabled]="loading">
+            <span *ngIf="loading" class="spinner"></span>
+            {{ loading ? 'Creating account...' : 'Create Account' }}
+          </button>
+        </form>
+
+        <p class="auth-footer">
+          Already have an account? <a routerLink="/login">Sign in</a>
+        </p>
+      </div>
+    </div>
