@@ -1,0 +1,11 @@
+<div class="toast-container">
+  <div *ngFor="let t of toasts; let i = index"
+       class="toast-item"
+       [ngClass]="'toast-' + t.type"
+       (click)="remove(i)">
+    <span *ngIf="t.type==='success'">✓</span>
+    <span *ngIf="t.type==='error'">✕</span>
+    <span *ngIf="t.type==='info'">ℹ</span>
+    {{ t.message }}
+  </div>
+</div>
