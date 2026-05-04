@@ -1,26 +1,29 @@
 import { Injectable } from '@angular/core';
-import { AuthRequest, LoginResponse, SignupRequest } from './models/auth';
+
 import { Observable, tap } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { Route, Router } from '@angular/router';
-import { environment } from './enviroment';
+import { environment } from '../enviroment';
+import { AuthRequest, LoginResponse, SignupRequest } from '../models/auth';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class AuthService {
+  private apiUrl = environment.apiUrl;
 
-   private apiUrl = environment.apiUrl;
-
-  constructor(private http: HttpClient, private router: Router) { }
+  constructor(
+    private http: HttpClient,
+    private router: Router,
+  ) {}
 
   login(request: AuthRequest): Observable<LoginResponse> {
     return this.http.post<LoginResponse>(`${this.apiUrl}/login`, request).pipe(
-      tap(res => {
+      tap((res) => {
         localStorage.setItem('token', res.token);
         localStorage.setItem('username', res.userName);
         localStorage.setItem('role', res.role);
-      })
+      }),
     );
   }
 
@@ -54,5 +57,4 @@ export class AuthService {
   isAdmin(): boolean {
     return this.getRole() === 'ADMIN';
   }
-
 }
