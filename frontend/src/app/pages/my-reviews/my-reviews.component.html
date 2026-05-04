@@ -1,0 +1,23 @@
+<div class="page-container fade-in">
+  <h1 class="section-title">My Reviews</h1>
+  <p class="section-subtitle">Reviews you've written for your trips</p>
+
+  <div *ngIf="loading" class="loading-center"><div class="spinner"></div></div>
+
+  <div *ngIf="!loading && reviews.length === 0" class="empty-state">
+    <h3>No reviews yet</h3>
+    <p>After completing a trip, you can leave reviews for the bus service</p>
+  </div>
+
+  <div class="reviews-grid">
+    <div *ngFor="let r of reviews" class="review-card card-custom">
+      <div class="review-header">
+        <span class="review-trip">Trip #{{ r.tripId }}</span>
+        <div class="review-stars">
+          <span *ngFor="let s of [1,2,3,4,5]" class="star" [class.filled]="s <= r.rating">★</span>
+        </div>
+      </div>
+      <p class="review-text">{{ r.comment }}</p>
+    </div>
+  </div>
+</div>
