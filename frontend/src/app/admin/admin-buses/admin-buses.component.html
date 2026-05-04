@@ -1,0 +1,110 @@
+<div class="page-container fade-in">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+      <h1 class="section-title">Manage Buses</h1>
+      <p class="section-subtitle mb-0">Manage fleet and assign to offices</p>
+    </div>
+    <button class="btn-primary-custom" (click)="showAddForm = !showAddForm">
+      {{ showAddForm ? 'Close' : '+ Add Bus' }}
+    </button>
+  </div>
+
+  <!-- Add Form -->
+  <div *ngIf="showAddForm" class="card-custom mb-4 fade-in bg-light">
+    <h4 class="mb-3">New Bus</h4>
+    <form (ngSubmit)="addBus()" class="row g-3">
+      <div class="col-md-3">
+        <label class="form-label">Registration Number *</label>
+        <input type="text" class="form-input" [(ngModel)]="newBus.registrationNumber" name="regNum" required>
+      </div>
+      <div class="col-md-3">
+        <label class="form-label">Type *</label>
+        <select class="form-select" [(ngModel)]="newBus.type" name="type" required>
+          <option value="AC">AC</option>
+          <option value="NON_AC">Non-AC</option>
+          <option value="SLEEPER">Sleeper</option>
+          <option value="SEMI_SLEEPER">Semi-Sleeper</option>
+        </select>
+      </div>
+      <div class="col-md-3">
+        <label class="form-label">Capacity *</label>
+        <input type="number" class="form-input" [(ngModel)]="newBus.capacity" name="capacity" required min="10" max="60">
+      </div>
+      <div class="col-md-3">
+        <label class="form-label">Office *</label>
+        <select class="form-select" [(ngModel)]="newBus.officeId" name="officeId" required>
+          <option [value]="0" disabled>Select Office</option>
+          <option *ngFor="let o of offices" [value]="o.officeId">{{ o.agencyName }} - {{ o.officeContactPersonName }}</option>
+        </select>
+      </div>
+      <div class="col-12 text-end">
+        <button type="submit" class="btn-primary-custom">Save Bus</button>
+      </div>
+    </form>
+  </div>
+
+  <div *ngIf="loading" class="loading-center"><div class="spinner"></div></div>
+
+  <!-- Data List -->
+  <div class="table-responsive card-custom p-0" *ngIf="!loading">
+    <table class="table-custom">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Registration</th>
+          <th>Type</th>
+          <th>Capacity</th>
+          <th>Office ID</th>
+          <th class="text-end">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let b of buses" (click)="editRow(b)" [class.editing]="editingId === b.busId">
+          <td class="align-middle">#{{ b.busId }}</td>
+
+          <!-- Read Mode -->
+          <ng-container *ngIf="editingId !== b.busId">
+            <td class="align-middle fw-600">{{ b.registrationNumber }}</td>
+            <td class="align-middle">
+              <span class="badge-custom badge-info">{{ b.type }}</span>
+            </td>
+            <td class="align-middle">{{ b.capacity }} seats</td>
+            <td class="align-middle">{{ b.officeId }}</td>
+            <td class="text-end align-middle">
+              <span class="text-muted small">Click row to edit</span>
+            </td>
+          </ng-container>
+
+          <!-- Edit Mode -->
+          <ng-container *ngIf="editingId === b.busId">
+            <td><input type="text" class="form-input form-input-sm" [(ngModel)]="editBus.registrationNumber" (click)="$event.stopPropagation()"></td>
+            <td>
+              <select class="form-select form-input-sm" [(ngModel)]="editBus.type" (click)="$event.stopPropagation()">
+                <option value="AC">AC</option>
+                <option value="NON_AC">Non-AC</option>
+                <option value="SLEEPER">Sleeper</option>
+                <option value="SEMI_SLEEPER">Semi-Sleeper</option>
+              </select>
+            </td>
+            <td><input type="number" class="form-input form-input-sm" [(ngModel)]="editBus.capacity" (click)="$event.stopPropagation()"></td>
+            <td>
+              <select class="form-select form-input-sm" [(ngModel)]="editBus.officeId" (click)="$event.stopPropagation()">
+                <option *ngFor="let o of offices" [value]="o.officeId">{{ o.agencyName }} - {{ o.officeContactPersonName }}</option>
+              </select>
+            </td>
+            <td class="text-end align-middle" (click)="$event.stopPropagation()">
+              <div class="d-flex gap-2 justify-content-end">
+                <button class="btn-primary-custom btn-sm" (click)="saveEdit()">Save</button>
+                <button class="btn-ghost btn-sm" (click)="cancelEdit()">Cancel</button>
+                <button class="btn-danger-custom btn-sm" (click)="deleteBus(b.busId)">Delete</button>
+              </div>
+            </td>
+          </ng-container>
+        </tr>
+        <tr *ngIf="buses.length === 0">
+          <td colspan="6" class="text-center py-4 text-muted">No buses found.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
