@@ -1,0 +1,96 @@
+<div class="page-container fade-in">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+      <h1 class="section-title">Manage Drivers</h1>
+      <p class="section-subtitle mb-0">Driver profiles and office assignments</p>
+    </div>
+    <button class="btn-primary-custom" (click)="showAddForm = !showAddForm">
+      {{ showAddForm ? 'Close' : '+ Add Driver' }}
+    </button>
+  </div>
+
+  <!-- Add Form -->
+  <div *ngIf="showAddForm" class="card-custom mb-4 fade-in bg-light">
+    <h4 class="mb-3">New Driver</h4>
+    <form (ngSubmit)="addDriver()" class="row g-3">
+      <div class="col-md-3">
+        <label class="form-label">Name *</label>
+        <input type="text" class="form-input" [(ngModel)]="newDriver.name" name="name" required>
+      </div>
+      <div class="col-md-3">
+        <label class="form-label">License Number *</label>
+        <input type="text" class="form-input" [(ngModel)]="newDriver.licenseNumber" name="license" required>
+      </div>
+      <div class="col-md-3">
+        <label class="form-label">Phone *</label>
+        <input type="text" class="form-input" [(ngModel)]="newDriver.phone" name="phone" required>
+      </div>
+      <div class="col-md-3">
+        <label class="form-label">Office *</label>
+        <select class="form-select" [(ngModel)]="newDriver.officeId" name="officeId" required>
+          <option [value]="0" disabled>Select Office</option>
+          <option *ngFor="let o of offices" [value]="o.officeId">{{ o.agencyName }} - {{ o.officeContactPersonName }}</option>
+        </select>
+      </div>
+      <div class="col-12 text-end">
+        <button type="submit" class="btn-primary-custom">Save Driver</button>
+      </div>
+    </form>
+  </div>
+
+  <div *ngIf="loading" class="loading-center"><div class="spinner"></div></div>
+
+  <!-- Data List -->
+  <div class="table-responsive card-custom p-0" *ngIf="!loading">
+    <table class="table-custom">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Name</th>
+          <th>License</th>
+          <th>Phone</th>
+          <th>Office ID</th>
+          <th class="text-end">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let d of drivers" (click)="editRow(d)" [class.editing]="editingId === d.driverId">
+          <td class="align-middle">#{{ d.driverId }}</td>
+
+          <!-- Read Mode -->
+          <ng-container *ngIf="editingId !== d.driverId">
+            <td class="align-middle fw-600">{{ d.name }}</td>
+            <td class="align-middle">{{ d.licenseNumber }}</td>
+            <td class="align-middle">{{ d.phone }}</td>
+            <td class="align-middle">{{ d.officeId }}</td>
+            <td class="text-end align-middle">
+              <span class="text-muted small">Click row to edit</span>
+            </td>
+          </ng-container>
+
+          <!-- Edit Mode -->
+          <ng-container *ngIf="editingId === d.driverId">
+            <td><input type="text" class="form-input form-input-sm" [(ngModel)]="editDriver.name" (click)="$event.stopPropagation()"></td>
+            <td><input type="text" class="form-input form-input-sm" [(ngModel)]="editDriver.licenseNumber" (click)="$event.stopPropagation()"></td>
+            <td><input type="text" class="form-input form-input-sm" [(ngModel)]="editDriver.phone" (click)="$event.stopPropagation()"></td>
+            <td>
+              <select class="form-select form-input-sm" [(ngModel)]="editDriver.officeId" (click)="$event.stopPropagation()">
+                <option *ngFor="let o of offices" [value]="o.officeId">{{ o.agencyName }} - {{ o.officeContactPersonName }}</option>
+              </select>
+            </td>
+            <td class="text-end align-middle" (click)="$event.stopPropagation()">
+              <div class="d-flex gap-2 justify-content-end">
+                <button class="btn-primary-custom btn-sm" (click)="saveEdit()">Save</button>
+                <button class="btn-ghost btn-sm" (click)="cancelEdit()">Cancel</button>
+                <button class="btn-danger-custom btn-sm" (click)="deleteDriver(d.driverId)">Delete</button>
+              </div>
+            </td>
+          </ng-container>
+        </tr>
+        <tr *ngIf="drivers.length === 0">
+          <td colspan="6" class="text-center py-4 text-muted">No drivers found.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
