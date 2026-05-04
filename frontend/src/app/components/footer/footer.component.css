@@ -1,0 +1,11 @@
+.footer-custom {
+  background: var(--white);
+  border-top: 1px solid var(--gray-200);
+  padding: 20px 0;
+  margin-top: auto;
+}
+p {
+  font-size: 0.813rem;
+  color: var(--gray-400);
+  margin: 0;
+}
