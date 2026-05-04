@@ -26,15 +26,15 @@
         </div>
 
         <div class="booking-route">
-          <span class="route-city">{{ b.trip?.source }}</span>
+          <span class="route-city">{{ b.trip.source }}</span>
           <span class="route-arrow">→</span>
-          <span class="route-city">{{ b.trip?.destination }}</span>
+          <span class="route-city">{{ b.trip.destination }}</span>
         </div>
 
         <div class="booking-meta">
-          <span>🚌 {{ b.trip?.busNumber }} <span class="badge-custom badge-info">{{ b.trip?.busType }}</span></span>
-          <span>📅 {{ b.trip?.tripDate }}</span>
-          <span>🕐 {{ formatTime(b.trip?.departureTime) }}</span>
+          <span>🚌 {{ b.trip.busNumber }} <span class="badge-custom badge-info">{{ b.trip.busType }}</span></span>
+          <span>📅 {{ b.trip.tripDate }}</span>
+          <span>🕐 {{ formatTime(b.trip.departureTime) }}</span>
           <span>👥 {{ b.totalSeats }} seat{{ b.totalSeats > 1 ? 's' : '' }}</span>
         </div>
 

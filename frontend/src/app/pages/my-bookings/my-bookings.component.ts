@@ -34,11 +34,11 @@ export class MyBookingsComponent implements OnInit {
     const today = new Date().toISOString().split('T')[0];
     if (this.tab === 'upcoming') {
       return this.allBookings.filter(b =>
-        b.trip?.tripDate >= today && b.status !== 'CANCELLED'
+        b.trip.tripDate >= today && b.status !== 'CANCELLED'
       );
     } else {
       return this.allBookings.filter(b =>
-        b.trip?.tripDate < today || b.status === 'CANCELLED'
+        b.trip.tripDate < today || b.status === 'CANCELLED'
       );
     }
   }
