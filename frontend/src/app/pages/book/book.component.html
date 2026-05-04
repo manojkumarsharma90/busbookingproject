@@ -1,0 +1,103 @@
+<div class="page-container fade-in">
+  <div *ngIf="loading" class="loading-center"><div class="spinner"></div></div>
+
+  <div *ngIf="!loading && trip" class="booking-layout">
+    <!-- Trip Details -->
+    <div class="trip-summary card-custom">
+      <h2 class="section-title">Trip Details</h2>
+      <div class="trip-detail-grid">
+        <div>
+          <span class="label">Route</span>
+          <span class="value">{{ trip.source }} → {{ trip.destination }}</span>
+        </div>
+        <div>
+          <span class="label">Bus</span>
+          <span class="value">{{ trip.busNumber }} <span class="badge-custom badge-info">{{ trip.busType }}</span></span>
+        </div>
+        <div>
+          <span class="label">Date</span>
+          <span class="value">{{ trip.tripDate }}</span>
+        </div>
+        <div>
+          <span class="label">Departure</span>
+          <span class="value">{{ formatTime(trip.departureTime) }}</span>
+        </div>
+        <div>
+          <span class="label">Fare</span>
+          <span class="value price">₹{{ trip.fare }} / seat</span>
+        </div>
+        <div>
+          <span class="label">Available</span>
+          <span class="value">{{ trip.availableSeats }} seats</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Seat Selector -->
+    <div class="seat-section card-custom">
+      <h2 class="section-title">Select Seats</h2>
+      <p class="section-subtitle">Click on available seats to select</p>
+
+      <div class="seat-legend">
+        <span><span class="seat-box available"></span> Available</span>
+        <span><span class="seat-box selected"></span> Selected</span>
+        <span><span class="seat-box booked"></span> Booked</span>
+      </div>
+
+      <div class="seat-grid">
+        <div class="bus-layout">
+          <div class="driver-area">🧑‍✈️ Driver</div>
+          <div class="seats-container">
+            <div *ngFor="let seat of allSeats"
+                 class="seat"
+                 [class.booked]="isBooked(seat)"
+                 [class.selected]="isSelected(seat)"
+                 (click)="toggleSeat(seat)">
+              {{ seat }}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <p class="selected-info" *ngIf="selectedSeats.length > 0">
+        Selected: <strong>{{ selectedSeats.join(', ') }}</strong>
+        &middot; Total: <strong>₹{{ selectedSeats.length * trip.fare }}</strong>
+      </p>
+    </div>
+
+    <!-- Passenger Details -->
+    <div *ngIf="selectedSeats.length > 0" class="passengers-section card-custom fade-in">
+      <h2 class="section-title">Passenger Details</h2>
+
+      <div *ngFor="let p of passengers; let i = index" class="passenger-card">
+        <h4>Seat {{ p.seatNo }}</h4>
+        <div class="row g-3">
+          <div class="col-md-4">
+            <label class="form-label">Name</label>
+            <input type="text" class="form-input" [(ngModel)]="p.name" placeholder="Full name">
+          </div>
+          <div class="col-md-4">
+            <label class="form-label">Age</label>
+            <input type="number" class="form-input" [(ngModel)]="p.age" placeholder="Age" min="1">
+          </div>
+          <div class="col-md-4">
+            <label class="form-label">Gender</label>
+            <select class="form-select" [(ngModel)]="p.gender">
+              <option value="">Select</option>
+              <option value="Male">Male</option>
+              <option value="Female">Female</option>
+              <option value="Other">Other</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <div *ngIf="error" class="error-msg mt-3">{{ error }}</div>
+
+      <button class="btn-primary-custom mt-3" (click)="onBook()" [disabled]="bookingLoading">
+        <span *ngIf="bookingLoading" class="spinner"></span>
+        {{ bookingLoading ? 'Booking...' : 'Confirm Booking — ₹' + (selectedSeats.length * trip.fare) }}
+      </button>
+    </div>
+  </div>
+</div>
