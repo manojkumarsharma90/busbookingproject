@@ -1,0 +1,89 @@
+<div class="page-container fade-in">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+      <h1 class="section-title">Manage Routes</h1>
+      <p class="section-subtitle mb-0">Define cities and travel paths</p>
+    </div>
+    <button class="btn-primary-custom" (click)="showAddForm = !showAddForm">
+      {{ showAddForm ? 'Close' : '+ Add Route' }}
+    </button>
+  </div>
+
+  <!-- Add Form -->
+  <div *ngIf="showAddForm" class="card-custom mb-4 fade-in bg-light">
+    <h4 class="mb-3">New Route</h4>
+    <form (ngSubmit)="addRoute()" class="row g-3">
+      <div class="col-md-3">
+        <label class="form-label">From City *</label>
+        <input type="text" class="form-input" [(ngModel)]="newRoute.fromCity" name="fromCity" required>
+      </div>
+      <div class="col-md-3">
+        <label class="form-label">To City *</label>
+        <input type="text" class="form-input" [(ngModel)]="newRoute.toCity" name="toCity" required>
+      </div>
+      <div class="col-md-3">
+        <label class="form-label">Break Points</label>
+        <input type="number" class="form-input" [(ngModel)]="newRoute.breakPoints" name="breakPoints" min="0">
+      </div>
+      <div class="col-md-3">
+        <label class="form-label">Duration (mins) *</label>
+        <input type="number" class="form-input" [(ngModel)]="newRoute.duration" name="duration" required min="1">
+      </div>
+      <div class="col-12 text-end">
+        <button type="submit" class="btn-primary-custom">Save Route</button>
+      </div>
+    </form>
+  </div>
+
+  <div *ngIf="loading" class="loading-center"><div class="spinner"></div></div>
+
+  <!-- Data List -->
+  <div class="table-responsive card-custom p-0" *ngIf="!loading">
+    <table class="table-custom">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>From City</th>
+          <th>To City</th>
+          <th>Break Points</th>
+          <th>Duration (mins)</th>
+          <th class="text-end">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let r of routes" (click)="editRow(r)" [class.editing]="editingId === r.routeId">
+          <td class="align-middle">#{{ r.routeId }}</td>
+
+          <!-- Read Mode -->
+          <ng-container *ngIf="editingId !== r.routeId">
+            <td class="align-middle fw-600">{{ r.fromCity }}</td>
+            <td class="align-middle fw-600">{{ r.toCity }}</td>
+            <td class="align-middle">{{ r.breakPoints || 0 }}</td>
+            <td class="align-middle">{{ r.duration }} mins</td>
+            <td class="text-end align-middle">
+              <span class="text-muted small">Click row to edit</span>
+            </td>
+          </ng-container>
+
+          <!-- Edit Mode -->
+          <ng-container *ngIf="editingId === r.routeId">
+            <td><input type="text" class="form-input form-input-sm" [(ngModel)]="editRoute.fromCity" (click)="$event.stopPropagation()"></td>
+            <td><input type="text" class="form-input form-input-sm" [(ngModel)]="editRoute.toCity" (click)="$event.stopPropagation()"></td>
+            <td><input type="number" class="form-input form-input-sm" [(ngModel)]="editRoute.breakPoints" (click)="$event.stopPropagation()"></td>
+            <td><input type="number" class="form-input form-input-sm" [(ngModel)]="editRoute.duration" (click)="$event.stopPropagation()"></td>
+            <td class="text-end align-middle" (click)="$event.stopPropagation()">
+              <div class="d-flex gap-2 justify-content-end">
+                <button class="btn-primary-custom btn-sm" (click)="saveEdit()">Save</button>
+                <button class="btn-ghost btn-sm" (click)="cancelEdit()">Cancel</button>
+                <button class="btn-danger-custom btn-sm" (click)="deleteRoute(r.routeId)">Delete</button>
+              </div>
+            </td>
+          </ng-container>
+        </tr>
+        <tr *ngIf="routes.length === 0">
+          <td colspan="6" class="text-center py-4 text-muted">No routes found.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
