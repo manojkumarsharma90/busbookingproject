@@ -1,0 +1,52 @@
+<section class="hero fade-in">
+  <div class="container">
+    <div class="hero-content">
+      <span class="hero-badge">🚌 India's Trusted Bus Booking</span>
+      <h1>Book your bus<br>ticket <span class="highlight">easily</span></h1>
+      <p class="hero-sub">Search, compare and book bus tickets across hundreds of routes. Fast, reliable, and affordable.</p>
+    </div>
+
+    <div class="search-card card-custom">
+      <h3>Search Buses</h3>
+      <form (ngSubmit)="onSearch()" class="search-form" ngNativeValidate>
+        <div class="search-fields">
+          <div class="field">
+            <label class="form-label">From</label>
+            <input type="text" class="form-input" [(ngModel)]="src" name="src" placeholder="e.g. Mumbai" required>
+          </div>
+          <div class="swap-btn" (click)="swapCities()">⇄</div>
+          <div class="field">
+            <label class="form-label">To</label>
+            <input type="text" class="form-input" [(ngModel)]="dest" name="dest" placeholder="e.g. Pune" required>
+          </div>
+          <div class="field">
+            <label class="form-label">Date</label>
+            <input type="date" class="form-input" [(ngModel)]="date" name="date" [min]="minDate" required>
+          </div>
+          <button type="submit" class="btn-primary-custom search-btn">
+            Search Buses →
+          </button>
+        </div>
+      </form>
+    </div>
+
+    <div class="stats-row">
+      <div class="stat">
+        <span class="stat-value">500+</span>
+        <span class="stat-label">Bus Routes</span>
+      </div>
+      <div class="stat">
+        <span class="stat-value">50K+</span>
+        <span class="stat-label">Happy Travelers</span>
+      </div>
+      <div class="stat">
+        <span class="stat-value">100+</span>
+        <span class="stat-label">Bus Partners</span>
+      </div>
+      <div class="stat">
+        <span class="stat-value">24/7</span>
+        <span class="stat-label">Support</span>
+      </div>
+    </div>
+  </div>
+</section>
