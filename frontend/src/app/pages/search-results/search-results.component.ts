@@ -12,7 +12,7 @@ import { ReviewService } from '../../services/review.service';
   standalone: true,
   imports: [CommonModule, FormsModule, RouterLink],
   templateUrl: './search-results.component.html',
-  styleUrls: ['./search-results.component.css']
+  styleUrls: ['./search-results.component.css'],
 })
 export class SearchResultsComponent implements OnInit {
   src = '';
@@ -36,11 +36,11 @@ export class SearchResultsComponent implements OnInit {
     private router: Router,
     private busService: BusService,
     private reviewService: ReviewService,
-    public auth: AuthService
-  ) { }
+    public auth: AuthService,
+  ) {}
 
   ngOnInit(): void {
-    this.route.queryParams.subscribe(params => {
+    this.route.queryParams.subscribe((params) => {
       this.src = params['src'] || '';
       this.dest = params['dest'] || '';
       this.date = params['date'] || '';
@@ -62,7 +62,7 @@ export class SearchResultsComponent implements OnInit {
         this.loading = false;
         this.allTrips = [];
         this.filteredTrips = [];
-      }
+      },
     });
   }
 
@@ -70,16 +70,18 @@ export class SearchResultsComponent implements OnInit {
     let trips = [...this.allTrips];
 
     if (this.busTypeFilter !== 'ALL') {
-      trips = trips.filter(t =>
-        t.busType?.toUpperCase().replace(/[\s-]/g, '_') === this.busTypeFilter
+      trips = trips.filter(
+        (t) =>
+          t.busType?.toUpperCase().replace(/[\s-]/g, '_') ===
+          this.busTypeFilter,
       );
     }
 
     if (this.minPrice != null) {
-      trips = trips.filter(t => t.fare >= this.minPrice!);
+      trips = trips.filter((t) => t.fare >= this.minPrice!);
     }
     if (this.maxPrice != null) {
-      trips = trips.filter(t => t.fare <= this.maxPrice!);
+      trips = trips.filter((t) => t.fare <= this.maxPrice!);
     }
 
     if (this.sortOrder === 'asc') {
@@ -107,14 +109,23 @@ export class SearchResultsComponent implements OnInit {
     this.reviewsFor = trip.tripId;
     this.reviewsLoading = true;
     this.reviewService.getReviewsByTrip(trip.tripId).subscribe({
-      next: (data) => { this.reviews = data; this.reviewsLoading = false; },
-      error: () => { this.reviews = []; this.reviewsLoading = false; }
+      next: (data) => {
+        this.reviews = data;
+        this.reviewsLoading = false;
+      },
+      error: () => {
+        this.reviews = [];
+        this.reviewsLoading = false;
+      },
     });
   }
 
   formatTime(dt: string): string {
     if (!dt) return '';
     const d = new Date(dt);
-    return d.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' });
+    return d.toLocaleTimeString('en-IN', {
+      hour: '2-digit',
+      minute: '2-digit',
+    });
   }
 }

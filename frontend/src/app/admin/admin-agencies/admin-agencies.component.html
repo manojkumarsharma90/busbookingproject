@@ -1,0 +1,89 @@
+<div class="page-container fade-in">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+      <h1 class="section-title">Manage Agencies</h1>
+      <p class="section-subtitle mb-0">Add, edit, or delete transport agencies</p>
+    </div>
+    <button class="btn-primary-custom" (click)="showAddForm = !showAddForm">
+      {{ showAddForm ? 'Close' : '+ Add Agency' }}
+    </button>
+  </div>
+
+  <!-- Add Form -->
+  <div *ngIf="showAddForm" class="card-custom mb-4 fade-in bg-light">
+    <h4 class="mb-3">New Agency</h4>
+    <form (ngSubmit)="addAgency()" class="row g-3">
+      <div class="col-md-3">
+        <label class="form-label">Name *</label>
+        <input type="text" class="form-input" [(ngModel)]="newAgency.name" name="name" required>
+      </div>
+      <div class="col-md-3">
+        <label class="form-label">Contact Person *</label>
+        <input type="text" class="form-input" [(ngModel)]="newAgency.contactPersonName" name="cpName" required>
+      </div>
+      <div class="col-md-3">
+        <label class="form-label">Email *</label>
+        <input type="email" class="form-input" [(ngModel)]="newAgency.email" name="email" required>
+      </div>
+      <div class="col-md-3">
+        <label class="form-label">Phone *</label>
+        <input type="text" class="form-input" [(ngModel)]="newAgency.phone" name="phone" required>
+      </div>
+      <div class="col-12 text-end">
+        <button type="submit" class="btn-primary-custom">Save Agency</button>
+      </div>
+    </form>
+  </div>
+
+  <div *ngIf="loading" class="loading-center"><div class="spinner"></div></div>
+
+  <!-- Data List -->
+  <div class="table-responsive card-custom p-0" *ngIf="!loading">
+    <table class="table-custom">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Name</th>
+          <th>Contact Person</th>
+          <th>Email</th>
+          <th>Phone</th>
+          <th class="text-end">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let a of agencies" (click)="editRow(a)" [class.editing]="editingId === a.agencyId">
+          <td class="align-middle">#{{ a.agencyId }}</td>
+
+          <!-- Read Mode -->
+          <ng-container *ngIf="editingId !== a.agencyId">
+            <td class="align-middle fw-600">{{ a.name }}</td>
+            <td class="align-middle">{{ a.contactPersonName }}</td>
+            <td class="align-middle">{{ a.email }}</td>
+            <td class="align-middle">{{ a.phone }}</td>
+            <td class="text-end align-middle">
+              <span class="text-muted small">Click row to edit</span>
+            </td>
+          </ng-container>
+
+          <!-- Edit Mode -->
+          <ng-container *ngIf="editingId === a.agencyId">
+            <td><input type="text" class="form-input form-input-sm" [(ngModel)]="editAgency.name" (click)="$event.stopPropagation()"></td>
+            <td><input type="text" class="form-input form-input-sm" [(ngModel)]="editAgency.contactPersonName" (click)="$event.stopPropagation()"></td>
+            <td><input type="email" class="form-input form-input-sm" [(ngModel)]="editAgency.email" (click)="$event.stopPropagation()"></td>
+            <td><input type="text" class="form-input form-input-sm" [(ngModel)]="editAgency.phone" (click)="$event.stopPropagation()"></td>
+            <td class="text-end align-middle" (click)="$event.stopPropagation()">
+              <div class="d-flex gap-2 justify-content-end">
+                <button class="btn-primary-custom btn-sm" (click)="saveEdit()">Save</button>
+                <button class="btn-ghost btn-sm" (click)="cancelEdit()">Cancel</button>
+                <button class="btn-danger-custom btn-sm" (click)="deleteAgency(a.agencyId)">Delete</button>
+              </div>
+            </td>
+          </ng-container>
+        </tr>
+        <tr *ngIf="agencies.length === 0">
+          <td colspan="6" class="text-center py-4 text-muted">No agencies found.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
