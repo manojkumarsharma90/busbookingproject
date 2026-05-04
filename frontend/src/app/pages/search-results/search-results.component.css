@@ -1,0 +1,84 @@
+.search-header { margin-bottom: 24px; }
+.content-grid {
+  display: grid;
+  grid-template-columns: 260px 1fr;
+  gap: 24px;
+  align-items: start;
+}
+.filters-panel { position: sticky; top: 80px; }
+.filters-panel h4 { font-size: 1rem; font-weight: 700; margin-bottom: 20px; }
+.filter-group { margin-bottom: 20px; }
+.filter-chips { display: flex; gap: 8px; }
+.filter-chips button {
+  padding: 6px 16px;
+  border-radius: 20px;
+  border: 1.5px solid var(--gray-300);
+  background: var(--white);
+  font-size: 0.813rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: var(--transition);
+  color: var(--gray-700);
+}
+.filter-chips button.active {
+  background: var(--primary);
+  color: var(--white);
+  border-color: var(--primary);
+}
+.price-inputs { display: flex; align-items: center; gap: 8px; }
+.price-inputs input { flex: 1; }
+.price-inputs span { color: var(--gray-400); }
+.w-100 { width: 100%; }
+
+.trips-list { display: flex; flex-direction: column; gap: 16px; }
+
+.trip-card { padding: 20px 24px; }
+.trip-row {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+}
+.trip-info { flex: 1; }
+.trip-route { margin-bottom: 8px; }
+.trip-city { font-size: 1.063rem; font-weight: 700; color: var(--dark); }
+.trip-arrow { margin: 0 8px; color: var(--gray-400); }
+.trip-meta { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+.meta-item { font-size: 0.813rem; color: var(--gray-500); }
+
+.trip-details {
+  display: flex;
+  gap: 24px;
+  text-align: center;
+}
+.trip-seats, .trip-price { display: flex; flex-direction: column; }
+.seats-count { font-size: 1.25rem; font-weight: 700; color: var(--accent); }
+.seats-label { font-size: 0.688rem; color: var(--gray-400); }
+.price-value { font-size: 1.25rem; font-weight: 700; color: var(--dark); }
+.price-label { font-size: 0.688rem; color: var(--gray-400); }
+
+.trip-actions { display: flex; gap: 8px; align-items: center; }
+
+.reviews-section {
+  border-top: 1px solid var(--gray-100);
+  margin-top: 16px;
+  padding-top: 16px;
+}
+.review-item {
+  padding: 10px 0;
+  border-bottom: 1px solid var(--gray-50);
+}
+.review-rating { color: var(--gray-300); font-size: 0.875rem; margin-bottom: 4px; }
+.review-rating .filled { color: var(--warning); }
+.review-comment { font-size: 0.875rem; color: var(--gray-700); }
+.no-reviews { font-size: 0.875rem; color: var(--gray-400); padding: 8px 0; }
+
+@media (max-width: 768px) {
+  .content-grid {
+    grid-template-columns: 1fr;
+  }
+  .filters-panel { position: static; }
+  .trip-row { flex-direction: column; align-items: flex-start; }
+  .trip-details { width: 100%; justify-content: space-around; }
+  .trip-actions { width: 100%; }
+  .trip-actions .btn-primary-custom { flex: 1; justify-content: center; }
+}

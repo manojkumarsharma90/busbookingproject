@@ -1,0 +1,104 @@
+<div class="page-container fade-in">
+  <div class="search-header">
+    <h1 class="section-title">{{ src }} → {{ dest }}</h1>
+    <p class="section-subtitle">{{ date }} &middot; {{ filteredTrips.length }} bus{{ filteredTrips.length !== 1 ? 'es' : '' }} found</p>
+  </div>
+
+  <div class="content-grid">
+    <!-- Filters Sidebar -->
+    <aside class="filters-panel card-custom">
+      <h4>Filters</h4>
+
+      <div class="filter-group">
+        <label class="form-label">Bus Type</label>
+        <div class="filter-chips">
+          <button [class.active]="busTypeFilter==='ALL'" (click)="busTypeFilter='ALL'; applyFilters()">All</button>
+          <button [class.active]="busTypeFilter==='AC'" (click)="busTypeFilter='AC'; applyFilters()">AC</button>
+          <button [class.active]="busTypeFilter==='NON_AC'" (click)="busTypeFilter='NON_AC'; applyFilters()">Non-AC</button>
+        </div>
+      </div>
+
+      <div class="filter-group">
+        <label class="form-label">Price Range</label>
+        <div class="price-inputs">
+          <input type="number" class="form-input" [(ngModel)]="minPrice" placeholder="Min" (change)="applyFilters()">
+          <span>—</span>
+          <input type="number" class="form-input" [(ngModel)]="maxPrice" placeholder="Max" (change)="applyFilters()">
+        </div>
+      </div>
+
+      <div class="filter-group">
+        <label class="form-label">Sort By Price</label>
+        <select class="form-select" [(ngModel)]="sortOrder" (change)="applyFilters()">
+          <option value="">Default</option>
+          <option value="asc">Low to High</option>
+          <option value="desc">High to Low</option>
+        </select>
+      </div>
+
+      <button class="btn-ghost w-100" (click)="resetFilters()">Reset Filters</button>
+    </aside>
+
+    <!-- Trip Cards -->
+    <div class="trips-list">
+      <div *ngIf="loading" class="loading-center"><div class="spinner"></div></div>
+
+      <div *ngIf="!loading && filteredTrips.length === 0" class="empty-state">
+        <h3>No buses found</h3>
+        <p>Try changing your search filters</p>
+      </div>
+
+      <div *ngFor="let trip of filteredTrips" class="trip-card card-custom">
+        <div class="trip-row">
+          <div class="trip-info">
+            <div class="trip-route">
+              <span class="trip-city">{{ trip.source }}</span>
+              <span class="trip-arrow">→</span>
+              <span class="trip-city">{{ trip.destination }}</span>
+            </div>
+            <div class="trip-meta">
+              <span class="badge-custom badge-info">{{ trip.busType }}</span>
+              <span class="meta-item">🚌 {{ trip.busNumber }}</span>
+              <span class="meta-item">🕐 {{ formatTime(trip.departureTime) }}</span>
+            </div>
+          </div>
+
+          <div class="trip-details">
+            <div class="trip-seats">
+              <span class="seats-count">{{ trip.availableSeats }}</span>
+              <span class="seats-label">seats left</span>
+            </div>
+            <div class="trip-price">
+              <span class="price-value">₹{{ trip.fare }}</span>
+              <span class="price-label">per seat</span>
+            </div>
+          </div>
+
+          <div class="trip-actions">
+            <button class="btn-ghost" (click)="toggleReviews(trip)">
+              {{ reviewsFor === trip.tripId ? 'Hide' : 'Reviews' }}
+            </button>
+            <a [routerLink]="['/book', trip.tripId]"
+               class="btn-primary-custom"
+               *ngIf="auth.isLoggedIn()">Book Now</a>
+            <a routerLink="/login"
+               class="btn-primary-custom"
+               *ngIf="!auth.isLoggedIn()">Login to Book</a>
+          </div>
+        </div>
+
+        <!-- Reviews Section -->
+        <div *ngIf="reviewsFor === trip.tripId" class="reviews-section">
+          <div *ngIf="reviewsLoading" class="text-center p-3"><div class="spinner"></div></div>
+          <div *ngIf="!reviewsLoading && reviews.length === 0" class="no-reviews">No reviews yet</div>
+          <div *ngFor="let r of reviews" class="review-item">
+            <div class="review-rating">
+              <span *ngFor="let s of [1,2,3,4,5]" [class.filled]="s <= r.rating">★</span>
+            </div>
+            <p class="review-comment">{{ r.comment }}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
