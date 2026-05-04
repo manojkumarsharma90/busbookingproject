@@ -1,0 +1,61 @@
+.tabs {
+  display: flex;
+  gap: 4px;
+  margin-bottom: 24px;
+  background: var(--gray-100);
+  border-radius: var(--radius-sm);
+  padding: 4px;
+  display: inline-flex;
+}
+.tabs button {
+  padding: 8px 20px;
+  border: none;
+  background: transparent;
+  border-radius: 6px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  color: var(--gray-500);
+  transition: var(--transition);
+}
+.tabs button.active {
+  background: var(--white);
+  color: var(--dark);
+  box-shadow: var(--shadow-sm);
+  font-weight: 600;
+}
+
+.bookings-grid { display: flex; flex-direction: column; gap: 16px; }
+
+.booking-card { padding: 20px 24px; }
+.booking-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+.booking-id { font-weight: 700; color: var(--dark); margin-right: 8px; }
+.booking-date { font-size: 0.813rem; color: var(--gray-400); }
+
+.booking-route { margin-bottom: 12px; }
+.route-city { font-size: 1.125rem; font-weight: 700; color: var(--dark); }
+.route-arrow { margin: 0 10px; color: var(--gray-400); }
+
+.booking-meta {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+  font-size: 0.813rem;
+  color: var(--gray-500);
+  margin-bottom: 12px;
+}
+
+.passengers-list {
+  font-size: 0.813rem;
+  color: var(--gray-500);
+  padding: 10px 0;
+  border-top: 1px solid var(--gray-100);
+}
+.pass-label { font-weight: 600; color: var(--gray-700); margin-right: 4px; }
+
+.booking-footer { margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--gray-100); }
