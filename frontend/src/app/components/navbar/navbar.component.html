@@ -1,0 +1,44 @@
+<nav class="navbar-custom">
+  <div class="container d-flex align-items-center justify-content-between">
+    <a routerLink="/" class="navbar-brand">
+      <span class="brand-icon">🚌</span>
+      <span class="brand-text">BusGo</span>
+    </a>
+
+    <button class="menu-toggle d-md-none" (click)="menuOpen = !menuOpen">
+      <span [class.open]="menuOpen"></span>
+    </button>
+
+    <div class="navbar-links" [class.show]="menuOpen">
+      <ng-container *ngIf="!auth.isAdmin()">
+        <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{exact:true}" (click)="menuOpen=false">Home</a>
+        <a routerLink="/my-bookings" routerLinkActive="active" *ngIf="auth.isLoggedIn()" (click)="menuOpen=false">My Bookings</a>
+        <a routerLink="/my-reviews" routerLinkActive="active" *ngIf="auth.isLoggedIn()" (click)="menuOpen=false">My Reviews</a>
+      </ng-container>
+
+      <ng-container *ngIf="auth.isAdmin()">
+        <a routerLink="/admin" routerLinkActive="active" [routerLinkActiveOptions]="{exact:true}" (click)="menuOpen=false">Dashboard</a>
+        <a routerLink="/admin/agencies" routerLinkActive="active" (click)="menuOpen=false">Agencies</a>
+        <a routerLink="/admin/offices" routerLinkActive="active" (click)="menuOpen=false">Offices</a>
+        <a routerLink="/admin/buses" routerLinkActive="active" (click)="menuOpen=false">Buses</a>
+        <a routerLink="/admin/drivers" routerLinkActive="active" (click)="menuOpen=false">Drivers</a>
+        <a routerLink="/admin/routes" routerLinkActive="active" (click)="menuOpen=false">Routes</a>
+        <a routerLink="/admin/trips" routerLinkActive="active" (click)="menuOpen=false">Trips</a>
+      </ng-container>
+    </div>
+
+    <div class="navbar-actions" [class.show]="menuOpen">
+      <ng-container *ngIf="!auth.isLoggedIn()">
+        <a routerLink="/login" class="btn-ghost" (click)="menuOpen=false">Login</a>
+        <a routerLink="/signup" class="btn-primary-custom btn-sm" (click)="menuOpen=false">Sign Up</a>
+      </ng-container>
+      <ng-container *ngIf="auth.isLoggedIn()">
+        <span class="user-badge">
+          <span class="user-avatar">{{ auth.getUsername()?.charAt(0)?.toUpperCase() }}</span>
+          {{ auth.getUsername() }}
+        </span>
+        <button class="btn-ghost btn-sm" (click)="auth.logout(); menuOpen=false">Logout</button>
+      </ng-container>
+    </div>
+  </div>
+</nav>
