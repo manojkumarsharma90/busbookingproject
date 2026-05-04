@@ -1,9 +1,11 @@
 import { Component } from '@angular/core';
-import { AuthService } from '../../auth.service';
+
 import { Router } from '@angular/router';
-import { ToastService } from '../../toast.service';
+
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
+import { ToastService } from '../../services/toast.service';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-signup',
