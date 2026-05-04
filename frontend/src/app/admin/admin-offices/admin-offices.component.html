@@ -1,0 +1,96 @@
+<div class="page-container fade-in">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+      <h1 class="section-title">Manage Offices</h1>
+      <p class="section-subtitle mb-0">Agency office locations and contacts</p>
+    </div>
+    <button class="btn-primary-custom" (click)="showAddForm = !showAddForm">
+      {{ showAddForm ? 'Close' : '+ Add Office' }}
+    </button>
+  </div>
+
+  <!-- Add Form -->
+  <div *ngIf="showAddForm" class="card-custom mb-4 fade-in bg-light">
+    <h4 class="mb-3">New Office</h4>
+    <form (ngSubmit)="addOffice()" class="row g-3">
+      <div class="col-md-3">
+        <label class="form-label">Agency *</label>
+        <select class="form-select" [(ngModel)]="newOffice.agencyId" name="agencyId" required>
+          <option [value]="0" disabled>Select Agency</option>
+          <option *ngFor="let a of agencies" [value]="a.agencyId">{{ a.name }}</option>
+        </select>
+      </div>
+      <div class="col-md-3">
+        <label class="form-label">Email *</label>
+        <input type="email" class="form-input" [(ngModel)]="newOffice.officeMail" name="email" required>
+      </div>
+      <div class="col-md-3">
+        <label class="form-label">Contact Person *</label>
+        <input type="text" class="form-input" [(ngModel)]="newOffice.officeContactPersonName" name="cpName" required>
+      </div>
+      <div class="col-md-3">
+        <label class="form-label">Phone *</label>
+        <input type="text" class="form-input" [(ngModel)]="newOffice.officeContactNumber" name="phone" required>
+      </div>
+      <div class="col-12 text-end">
+        <button type="submit" class="btn-primary-custom">Save Office</button>
+      </div>
+    </form>
+  </div>
+
+  <div *ngIf="loading" class="loading-center"><div class="spinner"></div></div>
+
+  <!-- Data List -->
+  <div class="table-responsive card-custom p-0" *ngIf="!loading">
+    <table class="table-custom">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Agency Name</th>
+          <th>Email</th>
+          <th>Contact Person</th>
+          <th>Phone</th>
+          <th class="text-end">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let o of offices" (click)="editRow(o)" [class.editing]="editingId === o.officeId">
+          <td class="align-middle">#{{ o.officeId }}</td>
+
+          <!-- Read Mode -->
+          <ng-container *ngIf="editingId !== o.officeId">
+            <td class="align-middle fw-600">{{ getAgencyName(o.agencyId) }}</td>
+            <td class="align-middle">{{ o.officeMail }}</td>
+            <td class="align-middle">{{ o.officeContactPersonName }}</td>
+            <td class="align-middle">{{ o.officeContactNumber }}</td>
+            <td class="text-end align-middle">
+              <span class="text-muted small">Click row to edit</span>
+            </td>
+          </ng-container>
+
+          <!-- Edit Mode -->
+          <ng-container *ngIf="editingId === o.officeId">
+            <td>
+              <select class="form-select form-input-sm" [(ngModel)]="editOffice.agencyId" (click)="$event.stopPropagation()">
+                <option *ngFor="let a of agencies" [value]="a.agencyId">{{ a.name }}</option>
+              </select>
+            </td>
+            <td><input type="email" class="form-input form-input-sm" [(ngModel)]="editOffice.officeMail" (click)="$event.stopPropagation()"></td>
+            <td><input type="text" class="form-input form-input-sm" [(ngModel)]="editOffice.officeContactPersonName" (click)="$event.stopPropagation()"></td>
+            <td><input type="text" class="form-input form-input-sm" [(ngModel)]="editOffice.officeContactNumber" (click)="$event.stopPropagation()"></td>
+            <td class="text-end align-middle" (click)="$event.stopPropagation()">
+              <div class="d-flex gap-2 justify-content-end">
+                <button class="btn-primary-custom btn-sm" (click)="saveEdit()">Save</button>
+                <button class="btn-ghost btn-sm" (click)="cancelEdit()">Cancel</button>
+                <button class="btn-danger-custom btn-sm" (click)="deleteOffice(o.officeId)">Delete</button>
+              </div>
+            </td>
+          </ng-container>
+        </tr>
+        <tr *ngIf="offices.length === 0">
+          <td colspan="6" class="text-center py-4 text-muted">No offices found.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
