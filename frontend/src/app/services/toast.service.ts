@@ -6,12 +6,8 @@ export interface Toast {
   type: 'success' | 'error' | 'info';
 }
 
-@Injectable({
-  providedIn: 'root',
-})
+@Injectable({ providedIn: 'root' })
 export class ToastService {
-  constructor() {}
-
   private toastSubject = new Subject<Toast>();
   toast$ = this.toastSubject.asObservable();
 

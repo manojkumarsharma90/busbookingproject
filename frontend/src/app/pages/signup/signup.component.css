@@ -1,30 +1,150 @@
- .auth-page {
-      min-height: calc(100vh - 70px);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 40px 20px;
-      background: var(--gray-50);
-    }
-    .auth-card {
-      background: var(--white);
-      border-radius: var(--radius-lg);
-      box-shadow: var(--shadow-lg);
-      padding: 40px;
-      width: 100%;
-      max-width: 520px;
-      border: 1px solid var(--gray-200);
-    }
-    .auth-header { text-align: center; margin-bottom: 28px; }
-    .auth-icon { font-size: 2.5rem; display: block; margin-bottom: 12px; }
-    .auth-header h1 { font-size: 1.5rem; font-weight: 700; color: var(--dark); margin-bottom: 4px; }
-    .auth-header p { font-size: 0.875rem; color: var(--gray-500); }
-    .auth-form { display: flex; flex-direction: column; gap: 20px; }
-    .w-100 { width: 100%; justify-content: center; padding: 12px !important; }
-    .error-msg {
-      background: #FEE2E2; color: #991B1B;
-      padding: 10px 14px; border-radius: var(--radius-sm);
-      font-size: 0.813rem; font-weight: 500;
-    }
-    .auth-footer { text-align: center; margin-top: 24px; font-size: 0.875rem; color: var(--gray-500); }
-    .auth-footer a { color: var(--primary); font-weight: 600; }
+.auth-page {
+  display: flex;
+  min-height: calc(100vh - 64px);
+  height: calc(100vh - 64px);
+  max-height: calc(100vh - 64px);
+  overflow: hidden;
+}
+
+.auth-left {
+  flex: 1;
+  background: var(--ink);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  padding: 36px 44px 24px;
+  overflow: hidden;
+  min-height: 0;
+  gap: 16px;
+}
+
+.auth-left-content {
+  position: relative;
+  z-index: 1;
+  max-width: 380px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: min(440px, 100%);
+  margin-top: 48px;
+}
+
+.auth-brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: #FFFFFF;
+  font-weight: 800;
+  font-size: 1.25rem;
+  margin-bottom: 16px;
+}
+
+.auth-left h2 {
+  font-size: 2.2rem;
+  font-weight: 800;
+  line-height: 1.15;
+  letter-spacing: -0.04em;
+  color: #FFFFFF;
+  margin: 0;
+}
+
+.auth-left p {
+  font-size: 0.95rem;
+  color: rgba(255,255,255,0.5);
+  max-width: 360px;
+  line-height: 1.6;
+  margin: 0;
+}
+
+.auth-bus-img {
+  width: 100%;
+  max-width: 440px;
+  max-height: clamp(200px, 30vh, 300px);
+  margin: 0 auto;
+  margin-top: -4px;
+  border-radius: var(--radius-xl) var(--radius-xl) 0 0;
+  object-fit: cover;
+}
+
+.auth-right {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 28px 36px;
+  background: var(--cream);
+  overflow: hidden;
+  min-height: 0;
+}
+
+.auth-card {
+  width: 100%;
+  max-width: 460px;
+  max-height: calc(100vh - 160px);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.auth-header { margin-bottom: 20px; }
+
+.auth-header h1 {
+  font-size: 1.75rem;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  margin-bottom: 6px;
+}
+
+.auth-header p {
+  font-size: 0.9375rem;
+  color: var(--ink-muted);
+  margin: 0;
+}
+
+.auth-form { display: flex; flex-direction: column; gap: 14px; }
+
+.form-group { display: flex; flex-direction: column; gap: 4px; }
+
+.form-row { display: flex; gap: 12px; }
+.form-row .form-group { flex: 1; }
+
+.auth-form .form-label {
+  font-size: 0.78rem;
+  margin-bottom: 2px;
+}
+
+.auth-form .form-input {
+  padding: 12px 16px;
+  font-size: 0.9rem;
+}
+
+.w-100 { width: 100%; justify-content: center; padding: 12px !important; font-size: 0.95rem !important; }
+
+.error-msg {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--red-light);
+  color: var(--red);
+  padding: 12px 16px;
+  border-radius: var(--radius-md);
+  font-size: 0.8125rem;
+  font-weight: 500;
+  border: 1px solid rgba(217,68,82,0.12);
+}
+
+.auth-footer {
+  text-align: center;
+  margin-top: 18px;
+  font-size: 0.9375rem;
+  color: var(--ink-muted);
+}
+.auth-footer a { color: var(--ink); font-weight: 700; }
+
+@media (max-width: 768px) {
+  .auth-page { flex-direction: column; }
+  .auth-left { display: none; }
+  .auth-right { min-height: calc(100vh - 64px); padding: 32px 20px; }
+  .form-row { flex-direction: column; gap: 18px; }
+}

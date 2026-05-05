@@ -1,34 +1,48 @@
 <div class="page-container fade-in">
-  <div *ngIf="loading" class="loading-center"><div class="spinner"></div></div>
+  <div *ngIf="loading" class="loading-center">
+    <div class="spinner"></div>
+  </div>
 
   <div *ngIf="!loading && trip" class="booking-layout">
     <!-- Trip Details -->
-    <div class="trip-summary card-custom">
-      <h2 class="section-title">Trip Details</h2>
-      <div class="trip-detail-grid">
-        <div>
-          <span class="label">Route</span>
-          <span class="value">{{ trip.source }} → {{ trip.destination }}</span>
+    <div class="trip-summary dark-glass-card">
+      <div class="trip-summary-header">
+        <h2>Trip Details</h2>
+        <span class="badge-custom badge-info">{{ trip.busType }}</span>
+      </div>
+      <div class="trip-route-hero">
+        <div class="route-end">
+          <span class="route-end-label">From</span>
+          <span class="route-end-city">{{ trip.source }}</span>
         </div>
-        <div>
-          <span class="label">Bus</span>
-          <span class="value">{{ trip.busNumber }} <span class="badge-custom badge-info">{{ trip.busType }}</span></span>
+        <div class="route-center">
+          <span class="route-center-dot"></span>
+          <span class="route-center-line"></span>
+          <span class="route-center-icon"><app-icon name="bus" [size]="18"></app-icon></span>
+          <span class="route-center-line"></span>
+          <span class="route-center-dot"></span>
         </div>
-        <div>
-          <span class="label">Date</span>
-          <span class="value">{{ trip.tripDate }}</span>
+        <div class="route-end">
+          <span class="route-end-label">To</span>
+          <span class="route-end-city">{{ trip.destination }}</span>
         </div>
-        <div>
-          <span class="label">Departure</span>
-          <span class="value">{{ formatTime(trip.departureTime) }}</span>
+      </div>
+      <div class="trip-meta-row">
+        <div class="meta-block">
+          <app-icon name="calendar" [size]="16"></app-icon>
+          <span>{{ trip.tripDate }}</span>
         </div>
-        <div>
-          <span class="label">Fare</span>
-          <span class="value price">₹{{ trip.fare }} / seat</span>
+        <div class="meta-block">
+          <app-icon name="clock" [size]="16"></app-icon>
+          <span>{{ formatTime(trip.departureTime) }}</span>
         </div>
-        <div>
-          <span class="label">Available</span>
-          <span class="value">{{ trip.availableSeats }} seats</span>
+        <div class="meta-block">
+          <app-icon name="bus" [size]="16"></app-icon>
+          <span>{{ trip.busNumber }}</span>
+        </div>
+        <div class="meta-block highlight-block">
+          <span class="fare-amount">{{ trip.fare }}</span>
+          <span class="fare-label">per seat</span>
         </div>
       </div>
     </div>
@@ -44,25 +58,25 @@
         <span><span class="seat-box booked"></span> Booked</span>
       </div>
 
-      <div class="seat-grid">
-        <div class="bus-layout">
-          <div class="driver-area">🧑‍✈️ Driver</div>
-          <div class="seats-container">
-            <div *ngFor="let seat of allSeats"
-                 class="seat"
-                 [class.booked]="isBooked(seat)"
-                 [class.selected]="isSelected(seat)"
-                 (click)="toggleSeat(seat)">
-              {{ seat }}
-            </div>
+      <div class="bus-layout">
+        <div class="driver-area">
+          <app-icon name="steering-wheel" [size]="18"></app-icon>
+          <span>Driver</span>
+        </div>
+        <div class="seats-container">
+          <div *ngFor="let seat of allSeats" class="seat" [class.booked]="isBooked(seat)"
+            [class.selected]="isSelected(seat)" (click)="toggleSeat(seat)">
+            {{ seat }}
           </div>
         </div>
       </div>
 
-      <p class="selected-info" *ngIf="selectedSeats.length > 0">
-        Selected: <strong>{{ selectedSeats.join(', ') }}</strong>
-        &middot; Total: <strong>₹{{ selectedSeats.length * trip.fare }}</strong>
-      </p>
+      <div class="selected-info" *ngIf="selectedSeats.length > 0">
+        <span class="selected-label">Selected:</span>
+        <strong>{{ selectedSeats.join(', ') }}</strong>
+        <span class="selected-divider">&middot;</span>
+        <span class="selected-total">Total: <strong>{{ selectedSeats.length * trip.fare }}</strong></span>
+      </div>
     </div>
 
     <!-- Passenger Details -->
@@ -70,17 +84,17 @@
       <h2 class="section-title">Passenger Details</h2>
 
       <div *ngFor="let p of passengers; let i = index" class="passenger-card">
-        <h4>Seat {{ p.seatNo }}</h4>
-        <div class="row g-3">
-          <div class="col-md-4">
+        <h4><app-icon name="seat" [size]="16"></app-icon> Seat {{ p.seatNo }}</h4>
+        <div class="passenger-fields">
+          <div class="p-field">
             <label class="form-label">Name</label>
             <input type="text" class="form-input" [(ngModel)]="p.name" placeholder="Full name">
           </div>
-          <div class="col-md-4">
+          <div class="p-field">
             <label class="form-label">Age</label>
             <input type="number" class="form-input" [(ngModel)]="p.age" placeholder="Age" min="1">
           </div>
-          <div class="col-md-4">
+          <div class="p-field">
             <label class="form-label">Gender</label>
             <select class="form-select" [(ngModel)]="p.gender">
               <option value="">Select</option>
@@ -92,11 +106,15 @@
         </div>
       </div>
 
-      <div *ngIf="error" class="error-msg mt-3">{{ error }}</div>
+      <div *ngIf="error" class="error-msg mt-3">
+        <app-icon name="x-mark" [size]="16"></app-icon>
+        {{ error }}
+      </div>
 
-      <button class="btn-primary-custom mt-3" (click)="onBook()" [disabled]="bookingLoading">
-        <span *ngIf="bookingLoading" class="spinner"></span>
-        {{ bookingLoading ? 'Booking...' : 'Confirm Booking — ₹' + (selectedSeats.length * trip.fare) }}
+      <button class="btn-primary-custom btn-book mt-3" (click)="onBook()" [disabled]="bookingLoading">
+        <span *ngIf="bookingLoading" class="spinner spinner-sm"></span>
+        {{ bookingLoading ? 'Booking...' : 'Confirm Booking' }}
+        <span class="book-price" *ngIf="!bookingLoading">&middot; {{ selectedSeats.length * trip.fare }}</span>
       </button>
     </div>
   </div>

@@ -11,14 +11,15 @@
 
   <div *ngIf="!loading">
     <div *ngIf="currentBookings.length === 0" class="empty-state">
+      <app-icon name="ticket" [size]="48"></app-icon>
       <h3>No {{ tab }} bookings</h3>
       <p>{{ tab === 'upcoming' ? 'Book a bus to see your upcoming trips here' : 'Your completed trips will appear here' }}</p>
     </div>
 
-    <div class="bookings-grid">
+    <div class="bookings-grid stagger-in">
       <div *ngFor="let b of currentBookings" class="booking-card card-custom">
         <div class="booking-header">
-          <div>
+          <div class="booking-id-row">
             <span class="booking-id">#{{ b.bookingId }}</span>
             <span class="badge-custom" [ngClass]="getStatusClass(b.status)">{{ b.status }}</span>
           </div>
@@ -26,16 +27,37 @@
         </div>
 
         <div class="booking-route">
-          <span class="route-city">{{ b.trip?.source }}</span>
-          <span class="route-arrow">→</span>
-          <span class="route-city">{{ b.trip?.destination }}</span>
+          <div class="booking-route-display">
+            <span class="bk-city">{{ b.trip.source }}</span>
+            <span class="bk-route-line">
+              <span class="bk-dot"></span>
+              <span class="bk-line"></span>
+              <span class="bk-icon"><app-icon name="bus" [size]="14"></app-icon></span>
+              <span class="bk-line"></span>
+              <span class="bk-dot"></span>
+            </span>
+            <span class="bk-city">{{ b.trip.destination }}</span>
+          </div>
         </div>
 
         <div class="booking-meta">
-          <span>🚌 {{ b.trip?.busNumber }} <span class="badge-custom badge-info">{{ b.trip?.busType }}</span></span>
-          <span>📅 {{ b.trip?.tripDate }}</span>
-          <span>🕐 {{ formatTime(b.trip?.departureTime) }}</span>
-          <span>👥 {{ b.totalSeats }} seat{{ b.totalSeats > 1 ? 's' : '' }}</span>
+          <span class="bk-meta-item">
+            <app-icon name="bus" [size]="14"></app-icon>
+            {{ b.trip.busNumber }}
+            <span class="badge-custom badge-info">{{ b.trip.busType }}</span>
+          </span>
+          <span class="bk-meta-item">
+            <app-icon name="calendar" [size]="14"></app-icon>
+            {{ b.trip.tripDate }}
+          </span>
+          <span class="bk-meta-item">
+            <app-icon name="clock" [size]="14"></app-icon>
+            {{ formatTime(b.trip.departureTime) }}
+          </span>
+          <span class="bk-meta-item">
+            <app-icon name="users" [size]="14"></app-icon>
+            {{ b.totalSeats }} seat{{ b.totalSeats > 1 ? 's' : '' }}
+          </span>
         </div>
 
         <div class="passengers-list" *ngIf="b.passengers?.length">
@@ -46,7 +68,7 @@
         </div>
 
         <div class="booking-footer" *ngIf="tab==='upcoming' && b.status !== 'CANCELLED'">
-          <button class="btn-danger-custom" (click)="cancelBooking(b.bookingId)">Cancel Booking</button>
+          <button class="btn-danger-custom btn-sm" (click)="cancelBooking(b.bookingId)">Cancel Booking</button>
         </div>
       </div>
     </div>

@@ -7,11 +7,12 @@ import { AuthService } from '../../services/auth.service';
 import { BookingService } from '../../services/booking.service';
 import { BusService } from '../../services/bus.service';
 import { ToastService } from '../../services/toast.service';
+import { IconComponent } from '../../shared/icon.component';
 
 @Component({
   selector: 'app-book',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, IconComponent],
   templateUrl: './book.component.html',
   styleUrls: ['./book.component.css']
 })

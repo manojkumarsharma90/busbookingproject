@@ -6,11 +6,12 @@ import { ReviewResponse, TripResponse } from '../../models/bus.model';
 import { AuthService } from '../../services/auth.service';
 import { BusService } from '../../services/bus.service';
 import { ReviewService } from '../../services/review.service';
+import { IconComponent } from '../../shared/icon.component';
 
 @Component({
   selector: 'app-search-results',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterLink],
+  imports: [CommonModule, FormsModule, RouterLink, IconComponent],
   templateUrl: './search-results.component.html',
   styleUrls: ['./search-results.component.css'],
 })
