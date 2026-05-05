@@ -3,11 +3,12 @@ import { Component, OnInit } from '@angular/core';
 import { BookingResponse } from '../../models/bus.model';
 import { BookingService } from '../../services/booking.service';
 import { ToastService } from '../../services/toast.service';
+import { IconComponent } from '../../shared/icon.component';
 
 @Component({
   selector: 'app-my-bookings',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, IconComponent],
   templateUrl: './my-bookings.component.html',
   styleUrls: ['./my-bookings.component.css']
 })

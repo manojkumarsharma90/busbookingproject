@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
+import { Router, RouterOutlet } from '@angular/router';
 import { FooterComponent } from './components/footer/footer.component';
 import { NavbarComponent } from './components/navbar/navbar.component';
 import { ToastComponent } from './components/toast/toast.component';
@@ -14,4 +14,10 @@ import { ToastComponent } from './components/toast/toast.component';
 })
 export class AppComponent {
   title = 'frontendBusTicketBooking';
+
+  constructor(private router: Router) {}
+
+  get hideFooter(): boolean {
+    return this.router.url.startsWith('/login') || this.router.url.startsWith('/signup');
+  }
 }

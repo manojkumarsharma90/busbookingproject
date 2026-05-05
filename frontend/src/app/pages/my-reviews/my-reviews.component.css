@@ -3,15 +3,43 @@
   grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
   gap: 16px;
 }
-.review-card { padding: 20px; }
+
+.review-card { padding: 24px !important; }
+
 .review-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 12px;
+  margin-bottom: 14px;
 }
-.review-trip { font-weight: 600; color: var(--dark); font-size: 0.938rem; }
-.review-stars { font-size: 1rem; }
-.star { color: var(--gray-300); }
-.star.filled { color: var(--warning); }
-.review-text { font-size: 0.875rem; color: var(--gray-700); line-height: 1.6; }
+
+.review-trip {
+  font-weight: 700;
+  color: var(--ink);
+  font-size: 0.9375rem;
+}
+
+.review-stars {
+  display: flex;
+  gap: 2px;
+}
+
+.star-icon {
+  color: var(--ink-faint);
+}
+
+.star-icon.filled {
+  color: var(--amber);
+}
+
+.review-text {
+  font-size: 0.9375rem;
+  color: var(--ink-light);
+  line-height: 1.7;
+  margin: 0;
+}
+
+.empty-state app-icon {
+  color: var(--ink-faint);
+  margin-bottom: 16px;
+}

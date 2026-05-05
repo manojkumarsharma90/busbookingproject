@@ -1,16 +1,15 @@
 import { Component } from '@angular/core';
-
-import { Router } from '@angular/router';
-
+import { Router, RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { ToastService } from '../../services/toast.service';
 import { AuthService } from '../../services/auth.service';
+import { IconComponent } from '../../shared/icon.component';
 
 @Component({
   selector: 'app-signup',
   standalone: true,
-  imports: [FormsModule,CommonModule],
+  imports: [FormsModule, CommonModule, RouterLink, IconComponent],
   templateUrl: './signup.component.html',
   styleUrl: './signup.component.css'
 })

@@ -1,12 +1,12 @@
 <div class="page-container fade-in">
   <div class="search-header">
-    <h1 class="section-title">{{ src }} → {{ dest }}</h1>
+    <h1 class="section-title">{{ src }} <span class="route-arrow"><app-icon name="arrow-right" [size]="20"></app-icon></span> {{ dest }}</h1>
     <p class="section-subtitle">{{ date }} &middot; {{ filteredTrips.length }} bus{{ filteredTrips.length !== 1 ? 'es' : '' }} found</p>
   </div>
 
   <div class="content-grid">
     <!-- Filters Sidebar -->
-    <aside class="filters-panel card-custom">
+    <aside class="filters-panel glass-card">
       <h4>Filters</h4>
 
       <div class="filter-group">
@@ -22,7 +22,7 @@
         <label class="form-label">Price Range</label>
         <div class="price-inputs">
           <input type="number" class="form-input" [(ngModel)]="minPrice" placeholder="Min" (change)="applyFilters()">
-          <span>—</span>
+          <span class="price-dash">&mdash;</span>
           <input type="number" class="form-input" [(ngModel)]="maxPrice" placeholder="Max" (change)="applyFilters()">
         </div>
       </div>
@@ -40,10 +40,11 @@
     </aside>
 
     <!-- Trip Cards -->
-    <div class="trips-list">
+    <div class="trips-list stagger-in">
       <div *ngIf="loading" class="loading-center"><div class="spinner"></div></div>
 
       <div *ngIf="!loading && filteredTrips.length === 0" class="empty-state">
+        <app-icon name="search" [size]="48"></app-icon>
         <h3>No buses found</h3>
         <p>Try changing your search filters</p>
       </div>
@@ -51,15 +52,29 @@
       <div *ngFor="let trip of filteredTrips" class="trip-card card-custom">
         <div class="trip-row">
           <div class="trip-info">
-            <div class="trip-route">
-              <span class="trip-city">{{ trip.source }}</span>
-              <span class="trip-arrow">→</span>
-              <span class="trip-city">{{ trip.destination }}</span>
+            <div class="trip-route-display">
+              <div class="trip-endpoint">
+                <span class="trip-city">{{ trip.source }}</span>
+              </div>
+              <div class="trip-route-line">
+                <span class="route-dot"></span>
+                <span class="route-line-bar"></span>
+                <span class="route-icon-center"><app-icon name="bus" [size]="16"></app-icon></span>
+                <span class="route-line-bar"></span>
+                <span class="route-dot"></span>
+              </div>
+              <div class="trip-endpoint">
+                <span class="trip-city">{{ trip.destination }}</span>
+              </div>
             </div>
             <div class="trip-meta">
               <span class="badge-custom badge-info">{{ trip.busType }}</span>
-              <span class="meta-item">🚌 {{ trip.busNumber }}</span>
-              <span class="meta-item">🕐 {{ formatTime(trip.departureTime) }}</span>
+              <span class="meta-item">
+                <app-icon name="bus" [size]="14"></app-icon> {{ trip.busNumber }}
+              </span>
+              <span class="meta-item">
+                <app-icon name="clock" [size]="14"></app-icon> {{ formatTime(trip.departureTime) }}
+              </span>
             </div>
           </div>
 
@@ -69,31 +84,33 @@
               <span class="seats-label">seats left</span>
             </div>
             <div class="trip-price">
-              <span class="price-value">₹{{ trip.fare }}</span>
+              <span class="price-value">{{ trip.fare }}</span>
               <span class="price-label">per seat</span>
             </div>
           </div>
 
           <div class="trip-actions">
-            <button class="btn-ghost" (click)="toggleReviews(trip)">
+            <button class="btn-ghost btn-sm" (click)="toggleReviews(trip)">
               {{ reviewsFor === trip.tripId ? 'Hide' : 'Reviews' }}
             </button>
             <a [routerLink]="['/book', trip.tripId]"
-               class="btn-primary-custom"
+               class="btn-primary-custom btn-sm"
                *ngIf="auth.isLoggedIn()">Book Now</a>
             <a routerLink="/login"
-               class="btn-primary-custom"
+               class="btn-primary-custom btn-sm"
                *ngIf="!auth.isLoggedIn()">Login to Book</a>
           </div>
         </div>
 
         <!-- Reviews Section -->
         <div *ngIf="reviewsFor === trip.tripId" class="reviews-section">
-          <div *ngIf="reviewsLoading" class="text-center p-3"><div class="spinner"></div></div>
+          <div *ngIf="reviewsLoading" class="text-center p-3"><div class="spinner spinner-sm"></div></div>
           <div *ngIf="!reviewsLoading && reviews.length === 0" class="no-reviews">No reviews yet</div>
           <div *ngFor="let r of reviews" class="review-item">
             <div class="review-rating">
-              <span *ngFor="let s of [1,2,3,4,5]" [class.filled]="s <= r.rating">★</span>
+              <span *ngFor="let s of [1,2,3,4,5]" class="star-icon" [class.filled]="s <= r.rating">
+                <app-icon [name]="s <= r.rating ? 'star-filled' : 'star'" [size]="14"></app-icon>
+              </span>
             </div>
             <p class="review-comment">{{ r.comment }}</p>
           </div>

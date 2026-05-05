@@ -1,51 +1,197 @@
-<section class="hero fade-in">
-  <div class="container">
-    <div class="hero-content">
-      <span class="hero-badge">🚌 India's Trusted Bus Booking</span>
-      <h1>Book your bus<br>ticket <span class="highlight">easily</span></h1>
-      <p class="hero-sub">Search, compare and book bus tickets across hundreds of routes. Fast, reliable, and affordable.</p>
+<section class="hero">
+  <div class="hero-bg">
+    <img src="assets/hero-journey.jpg" alt="Premium bus travel" class="hero-image" loading="eager">
+    <div class="hero-overlay"></div>
+  </div>
+
+  <div class="hero-container">
+    <div class="hero-content fade-in">
+      <div class="hero-badge">
+        <app-icon name="shield" [size]="14"></app-icon>
+        India's Trusted Bus Booking
+      </div>
+      <h1>Book your bus<br>ticket <span class="hero-highlight">easily</span></h1>
+      <p class="hero-sub">Search, compare and book bus tickets across hundreds of routes. Fast, reliable, and
+        affordable.</p>
     </div>
 
-    <div class="search-card card-custom">
-      <h3>Search Buses</h3>
+    <div class="search-card glass-card fade-in">
       <form (ngSubmit)="onSearch()" class="search-form" ngNativeValidate>
         <div class="search-fields">
-          <div class="field">
-            <label class="form-label">From</label>
-            <input type="text" class="form-input" [(ngModel)]="src" name="src" placeholder="e.g. Mumbai" required>
+          <div class="search-field">
+            <span class="search-field-label">From</span>
+            <div class="search-input-wrap">
+              <app-icon name="map-pin" [size]="18"></app-icon>
+              <input type="text" class="search-field-input" [(ngModel)]="src" name="src" placeholder="Departure city"
+                required>
+            </div>
           </div>
-          <div class="swap-btn" (click)="swapCities()">⇄</div>
-          <div class="field">
-            <label class="form-label">To</label>
-            <input type="text" class="form-input" [(ngModel)]="dest" name="dest" placeholder="e.g. Pune" required>
+
+          <button type="button" class="swap-btn" (click)="swapCities()">
+            <app-icon name="swap" [size]="18"></app-icon>
+          </button>
+
+          <div class="search-field">
+            <span class="search-field-label">To</span>
+            <div class="search-input-wrap">
+              <app-icon name="map-pin" [size]="18"></app-icon>
+              <input type="text" class="search-field-input" [(ngModel)]="dest" name="dest" placeholder="Arrival city"
+                required>
+            </div>
           </div>
-          <div class="field">
-            <label class="form-label">Date</label>
-            <input type="date" class="form-input" [(ngModel)]="date" name="date" [min]="minDate" required>
+
+          <div class="search-divider"></div>
+
+          <div class="search-field">
+            <span class="search-field-label">Date</span>
+            <div class="search-input-wrap">
+              <app-icon name="calendar" [size]="18"></app-icon>
+              <input type="date" class="search-field-input" [(ngModel)]="date" name="date" [min]="minDate" required>
+            </div>
           </div>
-          <button type="submit" class="btn-primary-custom search-btn">
-            Search Buses →
+
+          <button type="submit" class="search-submit">
+            <app-icon name="search" [size]="18"></app-icon>
+            Search
           </button>
         </div>
       </form>
     </div>
+  </div>
+</section>
 
-    <div class="stats-row">
-      <div class="stat">
+<section class="features-section">
+  <div class="features-container">
+    <div class="stats-row stagger-in">
+      <div class="stat-card glass-card">
         <span class="stat-value">500+</span>
         <span class="stat-label">Bus Routes</span>
       </div>
-      <div class="stat">
+      <div class="stat-card glass-card">
         <span class="stat-value">50K+</span>
         <span class="stat-label">Happy Travelers</span>
       </div>
-      <div class="stat">
+      <div class="stat-card glass-card">
         <span class="stat-value">100+</span>
         <span class="stat-label">Bus Partners</span>
       </div>
-      <div class="stat">
+      <div class="stat-card glass-card">
         <span class="stat-value">24/7</span>
         <span class="stat-label">Support</span>
+      </div>
+    </div>
+
+    <div class="why-section">
+      <h2 class="why-title">Why choose BusGo</h2>
+      <div class="why-grid stagger-in">
+        <div class="why-card card-custom">
+          <div class="why-icon">
+            <app-icon name="shield" [size]="28"></app-icon>
+          </div>
+          <h3>Safe & Verified</h3>
+          <p>All operators are verified with safety ratings and regular audits</p>
+        </div>
+        <div class="why-card card-custom">
+          <div class="why-icon">
+            <app-icon name="zap" [size]="28"></app-icon>
+          </div>
+          <h3>Instant Booking</h3>
+          <p>Select your seat and confirm in under 60 seconds with live availability</p>
+        </div>
+        <div class="why-card card-custom">
+          <div class="why-icon">
+            <app-icon name="credit-card" [size]="28"></app-icon>
+          </div>
+          <h3>Best Prices</h3>
+          <p>Compare fares across operators and save on every trip you take</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="journey-section">
+  <div class="journey-container">
+    <div class="journey-header">
+      <div class="journey-badge">
+        <app-icon name="globe" [size]="16"></app-icon>
+        Explore the world on a guided route
+      </div>
+      <h2>Follow the dotted trail to your next destination</h2>
+      <p>Plan in minutes with a curated roadmap, live prices, and verified operators ready for your journey.</p>
+    </div>
+
+    <div class="journey-grid">
+      <div class="route-map">
+        <svg class="route-path" viewBox="0 0 620 420" aria-hidden="true">
+          <path class="route-line"
+            d="M50 70 C170 20, 240 140, 340 110 S520 130, 570 80 S530 230, 360 220 S140 260, 90 360" />
+          <circle class="route-dot" cx="50" cy="70" r="8" />
+          <circle class="route-dot" cx="340" cy="110" r="8" />
+          <circle class="route-dot" cx="360" cy="220" r="8" />
+          <circle class="route-dot" cx="90" cy="360" r="8" />
+        </svg>
+
+        <div class="stop-card stop-one">
+          <img src="assets/dest_goa.png" alt="Goa beaches">
+          <div>
+            <span>Coastal escape</span>
+            <strong>Goa</strong>
+          </div>
+        </div>
+
+        <div class="stop-card stop-two">
+          <img src="assets/dest_jaipur.png" alt="Jaipur palaces">
+          <div>
+            <span>Royal heritage</span>
+            <strong>Jaipur</strong>
+          </div>
+        </div>
+
+        <div class="stop-card stop-three">
+          <img src="assets/dest_manali.png" alt="Manali mountains">
+          <div>
+            <span>Mountain calm</span>
+            <strong>Manali</strong>
+          </div>
+        </div>
+
+        <div class="stop-card stop-four">
+          <img src="assets/dest_varanasi.png" alt="Varanasi ghats">
+          <div>
+            <span>Riverside glow</span>
+            <strong>Varanasi</strong>
+          </div>
+        </div>
+      </div>
+
+      <div class="guide-panel">
+        <div class="guide-card">
+          <div class="guide-icon">
+            <app-icon name="map" [size]="22"></app-icon>
+          </div>
+          <h3>Your tourist guide, built into BusGo</h3>
+          <p>Discover must-see stops, compare fares, and lock seats with a route that feels handcrafted.</p>
+          <div class="guide-points">
+            <div class="guide-point">
+              <app-icon name="check" [size]="16"></app-icon>
+              Local highlights and timing tips
+            </div>
+            <div class="guide-point">
+              <app-icon name="check" [size]="16"></app-icon>
+              Verified operators and safe boarding
+            </div>
+            <div class="guide-point">
+              <app-icon name="check" [size]="16"></app-icon>
+              Real-time seat availability alerts
+            </div>
+          </div>
+          <div class="guide-chips">
+            <span>Live fares</span>
+            <span>Flexible routes</span>
+            <span>24/7 support</span>
+          </div>
+        </div>
       </div>
     </div>
   </div>

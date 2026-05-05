@@ -1,34 +1,46 @@
 <div class="auth-page">
-      <div class="auth-card fade-in">
-        <div class="auth-header">
-          <span class="auth-icon">🚌</span>
-          <h1>Welcome back</h1>
-          <p>Sign in to your BusGo account</p>
+  <div class="auth-left">
+    <div class="auth-left-content">
+      <h2>Travel smarter.<br>Travel better.</h2>
+      <p>Book bus tickets across India with live availability, instant confirmation, and the best fares.</p>
+    </div>
+    <img src="assets/login-hero.png" alt="Night coach travel" class="auth-bus-img" loading="lazy">
+  </div>
+
+  <div class="auth-right">
+    <div class="auth-card fade-in">
+      <div class="auth-header">
+        <h1>Welcome back</h1>
+        <p>Sign in to your BusGo account</p>
+      </div>
+
+      <form (ngSubmit)="onLogin()" class="auth-form">
+        <div class="form-group">
+          <label class="form-label">Username</label>
+          <input type="text" class="form-input" [(ngModel)]="username" name="username" placeholder="Enter your username"
+            required>
         </div>
 
-        <form (ngSubmit)="onLogin()" class="auth-form">
-          <div class="form-group">
-            <label class="form-label">Username</label>
-            <input type="text" class="form-input" [(ngModel)]="username" name="username"
-                   placeholder="Enter your username" required>
-          </div>
+        <div class="form-group">
+          <label class="form-label">Password</label>
+          <input type="password" class="form-input" [(ngModel)]="password" name="password"
+            placeholder="Enter your password" required>
+        </div>
 
-          <div class="form-group">
-            <label class="form-label">Password</label>
-            <input type="password" class="form-input" [(ngModel)]="password" name="password"
-                   placeholder="Enter your password" required>
-          </div>
+        <div *ngIf="error" class="error-msg">
+          <app-icon name="x-mark" [size]="16"></app-icon>
+          {{ error }}
+        </div>
 
-          <div *ngIf="error" class="error-msg">{{ error }}</div>
+        <button type="submit" class="btn-primary-custom w-100" [disabled]="loading">
+          <span *ngIf="loading" class="spinner spinner-sm"></span>
+          {{ loading ? 'Signing in...' : 'Sign In' }}
+        </button>
+      </form>
 
-          <button type="submit" class="btn-primary-custom w-100" [disabled]="loading">
-            <span *ngIf="loading" class="spinner"></span>
-            {{ loading ? 'Signing in...' : 'Sign In' }}
-          </button>
-        </form>
-
-        <p class="auth-footer">
-          Don't have an account? <a routerLink="/signup">Sign up</a>
-        </p>
-      </div>
+      <p class="auth-footer">
+        Don't have an account? <a routerLink="/signup">Sign up</a>
+      </p>
     </div>
+  </div>
+</div>

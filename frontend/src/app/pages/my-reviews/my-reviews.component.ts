@@ -2,11 +2,12 @@ import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { ReviewResponse } from '../../models/bus.model';
 import { ReviewService } from '../../services/review.service';
+import { IconComponent } from '../../shared/icon.component';
 
 @Component({
   selector: 'app-my-reviews',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, IconComponent],
   templateUrl: './my-reviews.component.html',
   styleUrls: ['./my-reviews.component.css']
 })
